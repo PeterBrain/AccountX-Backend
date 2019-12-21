@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'accountx'
+    'accountx',
+    'guardian'
 ]
 
 MIDDLEWARE = [
@@ -123,8 +124,7 @@ STATIC_URL = '/static/'
 JWT_AUTH = {'JWT_AUTH_HEADER_PREFIX': 'Bearer','JWT_EXPIRATION_DELTA': datetime.timedelta(days=3)}
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
-      'rest_framework.permissions.IsAuthenticated',
-      #'accountx.permissions.IsOwner',
+      'rest_framework.permissions.DjangoObjectPermissions',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
@@ -132,4 +132,8 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.BasicAuthentication',
     ),
 }
-AUTH_PASSWORD_VALIDATORS = []
+AUTH_PASSWORD_VALIDATORS = [] # Just for development (Complex passwords suck)
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend', # default
+    'guardian.backends.ObjectPermissionBackend',
+)

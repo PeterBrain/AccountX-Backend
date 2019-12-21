@@ -1,11 +1,13 @@
 from django.contrib import admin
-from .models import *
+
+from guardian.admin import GuardedModelAdmin
+from . import models
 
 # Register your models here.
 
 
-class CompanyAdmin(admin.ModelAdmin):
+class CompanyAdmin(GuardedModelAdmin):
     pass
 
 
-admin.site.register(Company, CompanyAdmin)
+admin.site.register(models.Company, CompanyAdmin)
