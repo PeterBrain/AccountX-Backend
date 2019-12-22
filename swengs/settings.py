@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'accountx',
-    'guardian'
+    'guardian',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -131,6 +132,9 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
+     'DEFAULT_FILTER_BACKENDS': (
+        'django_filters.rest_framework.DjangoFilterBackend',
+     ),
 }
 AUTH_PASSWORD_VALIDATORS = [] # Just for development (Complex passwords suck)
 AUTHENTICATION_BACKENDS = (

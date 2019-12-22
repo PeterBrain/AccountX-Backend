@@ -29,6 +29,7 @@ class Booking(models.Model):
     isNegative = models.BooleanField()
     name = models.TextField()
     cashflowdate = models.DateField()
+    amount = models.IntegerField()
     invoice = models.ManyToManyField('Media', blank=True)
 
     def __str__(self):

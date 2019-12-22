@@ -19,7 +19,7 @@ class BookingSerializer(serializers.ModelSerializer):
     def validate(self, data):
         company = data['company']
         bt = data['bookingType']
-        if self.context['request'].user.has_perm("change_company", company) and self.context['request'].user.has_perm("view_bookingtype", bt):
+        if self.context['request'].user.has_perm("view_company", company) and self.context['request'].user.has_perm("view_bookingtype", bt):
             return data
         else:
             raise PermissionDenied()
@@ -44,7 +44,12 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'email', 'password', 'groups']
-
+    def validate(self, data):
+        groups = data['groups']
+        if all(self.context['request'].user.has_perm("change_group", group) for group in groups):
+            return data
+        else:
+            raise PermissionDenied()
     def create(self, validated_data):
         user = super(UserSerializer, self).create(validated_data)
         user.set_password(validated_data['password'])

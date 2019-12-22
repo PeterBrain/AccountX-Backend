@@ -6,6 +6,7 @@ from django.core.files.storage import FileSystemStorage, default_storage
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
+from django_filters import rest_framework as filters
 from guardian.shortcuts import (assign_perm, get_objects_for_group,
                                 get_objects_for_user)
 from rest_framework import exceptions, viewsets
@@ -16,6 +17,14 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from . import models, serializers
+
+
+class BookingFilter(filters.FilterSet):
+    timestamp = filters.DateFromToRangeFilter('cashflowdate')
+
+    class Meta:
+        model = models.Booking
+        fields = ('company', 'name', 'timestamp')
 
 
 class CompanyViewSet(viewsets.ModelViewSet):
@@ -50,13 +59,7 @@ class CompanyViewSet(viewsets.ModelViewSet):
 class BookingViewSet(viewsets.ModelViewSet):
     queryset = models.Booking.objects.all()
     serializer_class = serializers.BookingSerializer
-
-    def list(self, request):
-        queryset = get_objects_for_user(
-            request.user, "view_booking", klass=models.Booking)
-        if(self.request.GET.get('cid')):
-            queryset = queryset.filter(company__id=self.request.GET.get('cid'))
-        return Response(serializers.BookingSerializer(queryset, many=True).data)
+    filterset_class = BookingFilter
 
     def perform_create(self, serializer):
         obj = serializer.save()
@@ -75,10 +78,16 @@ class BookingViewSet(viewsets.ModelViewSet):
         company = get_object_or_404(queryset, pk=pk)
         return Response(serializers.BookingSerializer(company).data)
 
+    def get_queryset(self):
+        queryset = get_objects_for_user(
+            self.request.user, "view_booking", klass=models.Booking)
+        return queryset
+
 
 class BookingTypeViewSet(viewsets.ModelViewSet):
     queryset = models.BookingType.objects.all()
     serializer_class = serializers.BookingTypeSerializer
+    filterset_fields = ('company', 'name')
 
     def perform_create(self, serializer):
         obj = serializer.save()
@@ -97,19 +106,12 @@ class BookingTypeViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = get_objects_for_user(
             self.request.user, "view_bookingtype", any_perm=True, klass=models.BookingType)
-        if(self.request.GET.get('cid')):
-            queryset = queryset.filter(company__id=self.request.GET.get('cid'))
         return queryset
 
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
-
-    def list(self, request):
-        queryset = User.objects.filter(
-            groups__in=request.user.groups.all()).distinct()
-        return Response(serializers.UserSerializer(queryset, many=True).data)
 
     def get_permissions(self):
         if self.action == "create":
@@ -123,23 +125,16 @@ class UserViewSet(viewsets.ModelViewSet):
             return serializers.UserSerializer
         else:
             return serializers.RegisterUserSerializer
-
     def get_queryset(self):
-        queryset = User.objects.none()
-        groups = get_objects_for_user(
-            self.request.user, "change_group", klass=Group)
-        for group in groups:
-            queryset = queryset | get_objects_for_group(
-                group, "change_user", any_perm=True, klass=User)
-        return (queryset.distinct())
-
+        queryset = get_objects_for_user(self.request.user,"change_user", any_perm=True, klass=User) | User.objects.filter(groups__in=self.request.user.groups.all())
+        return queryset.distinct()
 
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Group.objects.all()
     serializer_class = serializers.GroupSerializer
 
     def get_queryset(self):
-        return get_objects_for_user(self.request.user, "change_group", klass=Group)
+        return get_objects_for_user(self.request.user, "change_group", klass=Group) 
 
 
 class FileUploadView(APIView):
