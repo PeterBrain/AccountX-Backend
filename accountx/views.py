@@ -80,13 +80,6 @@ class BookingTypeViewSet(viewsets.ModelViewSet):
     queryset = models.BookingType.objects.all()
     serializer_class = serializers.BookingTypeSerializer
 
-    def list(self, request):
-        queryset = get_objects_for_user(
-            request.user, "view_bookingtype", any_perm=True, klass=models.BookingType)
-        if(self.request.GET.get('cid')):
-            queryset = queryset.filter(company__id=self.request.GET.get('cid'))
-        return Response(serializers.BookingTypeSerializer(queryset, many=True).data)
-
     def perform_create(self, serializer):
         obj = serializer.save()
         admins = Group.objects.get(name=obj.company.name+'_admins')
@@ -97,10 +90,16 @@ class BookingTypeViewSet(viewsets.ModelViewSet):
         assign_perm("view_bookingtype", accountants, obj)
 
     def retrieve(self, request, pk=None):
-        queryset = get_objects_for_user(
-            request.user, "view_bookingtype", any_perm=True, klass=models.BookingType)
+        queryset = self.get_queryset()
         company = get_object_or_404(queryset, pk=pk)
         return Response(serializers.BookingTypeSerializer(company).data)
+
+    def get_queryset(self):
+        queryset = get_objects_for_user(
+            self.request.user, "view_bookingtype", any_perm=True, klass=models.BookingType)
+        if(self.request.GET.get('cid')):
+            queryset = queryset.filter(company__id=self.request.GET.get('cid'))
+        return queryset
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -108,7 +107,8 @@ class UserViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.UserSerializer
 
     def list(self, request):
-        queryset = User.objects.filter(groups__in=request.user.groups.all())
+        queryset = User.objects.filter(
+            groups__in=request.user.groups.all()).distinct()
         return Response(serializers.UserSerializer(queryset, many=True).data)
 
     def get_permissions(self):
@@ -123,6 +123,23 @@ class UserViewSet(viewsets.ModelViewSet):
             return serializers.UserSerializer
         else:
             return serializers.RegisterUserSerializer
+
+    def get_queryset(self):
+        queryset = User.objects.none()
+        groups = get_objects_for_user(
+            self.request.user, "change_group", klass=Group)
+        for group in groups:
+            queryset = queryset | get_objects_for_group(
+                group, "change_user", any_perm=True, klass=User)
+        return (queryset.distinct())
+
+
+class GroupViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Group.objects.all()
+    serializer_class = serializers.GroupSerializer
+
+    def get_queryset(self):
+        return get_objects_for_user(self.request.user, "change_group", klass=Group)
 
 
 class FileUploadView(APIView):

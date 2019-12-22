@@ -8,6 +8,7 @@ router.register(r'companies', views.CompanyViewSet)
 router.register(r'bookings', views.BookingViewSet)
 router.register(r'bookingTypes', views.BookingTypeViewSet)
 router.register(r'users',views.UserViewSet)
+router.register(r'groups', views.GroupViewSet)
 urlpatterns = [
     path('', include(router.urls)),
     url(r'^media$', views.FileUploadView.as_view()),

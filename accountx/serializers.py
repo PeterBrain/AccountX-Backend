@@ -1,4 +1,4 @@
-from django.contrib.auth.models import Permission, User
+from django.contrib.auth.models import Permission, User, Group
 from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
 
@@ -53,14 +53,6 @@ class UserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
-    def validate(self, data):
-        groups = data['groups']
-        if self.context['request'].user.has_perm("change_group", groups[0]):
-            return data
-        else:
-            raise PermissionDenied()
-
-
 class RegisterUserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
@@ -80,6 +72,10 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = "__all__"
 
 class MediaSerializer(serializers.ModelSerializer):
     class Meta:
