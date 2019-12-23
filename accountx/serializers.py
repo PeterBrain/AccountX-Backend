@@ -112,6 +112,13 @@ class UserSerializer(serializers.ModelSerializer):
             Permission.objects.get(name='Can delete booking'))
         user.save()
         return user
+    def update(self, instance,validated_data):
+        if validated_data['password'] is not None:
+            instance.set_password(validated_data['password'])
+        if validated_data['email'] is not None:
+            instance.email = validated_data['email']
+        instance.save()
+        return instance
 
 
 class RegisterUserSerializer(serializers.ModelSerializer):
