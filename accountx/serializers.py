@@ -1,17 +1,40 @@
-from django.contrib.auth.models import Permission, User, Group
+from django.contrib.auth.models import Group, Permission, User
+from guardian.shortcuts import (assign_perm, get_objects_for_group,
+                                get_objects_for_user)
 from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
+from rest_framework_guardian.serializers import \
+    ObjectPermissionsAssignmentMixin
 
 from . import models
 
 
-class CompanySerializer(serializers.ModelSerializer):
+class CompanySerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMixin):
     class Meta:
         model = models.Company
         fields = '__all__'
 
+    def get_permissions_map(self, created):
+        current_user = self.context['request'].user
+        company = self.data['id']
+        admins = Group.objects.create(
+            name="company" + str(company) + '_admins')
+        accountants = Group.objects.create(
+            name="company" + str(company)+'_accountants')
+        current_user.groups.add(admins)
+        current_user.groups.add(accountants)
+        assign_perm("change_group", admins, admins)
+        assign_perm("change_group", admins, accountants)
+        assign_perm("delete_group", admins, admins)
+        assign_perm("delete_group", admins, accountants)
+        return {
+            'view_company': [admins, accountants],
+            'change_company': [admins],
+            'delete_company': [admins]
+        }
 
-class BookingSerializer(serializers.ModelSerializer):
+
+class BookingSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMixin):
     class Meta:
         model = models.Booking
         fields = '__all__'
@@ -24,8 +47,19 @@ class BookingSerializer(serializers.ModelSerializer):
         else:
             raise PermissionDenied()
 
+    def get_permissions_map(self, created):
+        company = self.data['company']
+        admins = Group.objects.get(name="company" + str(company) + '_admins')
+        accountants = Group.objects.get(
+            name="company" + str(company)+'_accountants')
+        return {
+            'view_booking': [admins, accountants],
+            'change_booking': [admins, accountants],
+            'delete_booking': [admins, accountants]
+        }
 
-class BookingTypeSerializer(serializers.ModelSerializer):
+
+class BookingTypeSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMixin):
     class Meta:
         model = models.BookingType
         fields = "__all__"
@@ -37,6 +71,17 @@ class BookingTypeSerializer(serializers.ModelSerializer):
         else:
             raise PermissionDenied()
 
+    def get_permissions_map(self, created):
+        company = self.data['company']
+        admins = Group.objects.get(name="company" + str(company) + '_admins')
+        accountants = Group.objects.get(
+            name="company" + str(company)+'_accountants')
+        return {
+            'view_bookingtype': [admins, accountants],
+            'change_bookingtype': [admins],
+            'delete_bookingtype': [admins]
+        }
+
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -44,19 +89,24 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'email', 'password', 'groups']
+
     def validate(self, data):
         groups = data['groups']
         if all(self.context['request'].user.has_perm("change_group", group) for group in groups):
             return data
         else:
             raise PermissionDenied()
+
     def create(self, validated_data):
         user = super(UserSerializer, self).create(validated_data)
         user.set_password(validated_data['password'])
         user.user_permissions.add(
             Permission.objects.get(name='Can add booking'))
+        user.user_permissions.add(
+            Permission.objects.get(name='Can delete booking'))
         user.save()
         return user
+
 
 class RegisterUserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -74,13 +124,28 @@ class RegisterUserSerializer(serializers.ModelSerializer):
             Permission.objects.get(name='Can add booking'))
         user.user_permissions.add(
             Permission.objects.get(name='Can add booking type'))
+        user.user_permissions.add(
+            Permission.objects.get(name='Can delete company'))
+        user.user_permissions.add(
+            Permission.objects.get(name='Can delete booking'))
+        user.user_permissions.add(
+            Permission.objects.get(name='Can delete booking type'))
+        user.user_permissions.add(
+            Permission.objects.get(name='Can change company'))
+        user.user_permissions.add(
+            Permission.objects.get(name='Can change booking'))
+        user.user_permissions.add(
+            Permission.objects.get(name='Can change booking type'))
+
         user.save()
         return user
+
 
 class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
         fields = "__all__"
+
 
 class MediaSerializer(serializers.ModelSerializer):
     class Meta:
