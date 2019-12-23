@@ -122,22 +122,32 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
-JWT_AUTH = {'JWT_AUTH_HEADER_PREFIX': 'Bearer','JWT_EXPIRATION_DELTA': datetime.timedelta(days=3)}
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
-      'rest_framework.permissions.DjangoObjectPermissions',
+        'rest_framework.permissions.DjangoObjectPermissions',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
-     'DEFAULT_FILTER_BACKENDS': (
+    'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
-     ),
+    ),
 }
-AUTH_PASSWORD_VALIDATORS = [] # Just for development (Complex passwords suck)
+AUTH_PASSWORD_VALIDATORS = []  # Just for development (Complex passwords suck)
 AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend', # default
+    'django.contrib.auth.backends.ModelBackend',  # default
     'guardian.backends.ObjectPermissionBackend',
 )
+
+
+def custom_jwt_payload_handler(user):
+    from rest_framework_jwt.utils import jwt_payload_handler
+    jwt_paylout = jwt_payload_handler(user)
+    jwt_paylout['permissions'] = dict.fromkeys(user.get_all_permissions())
+    return jwt_paylout
+
+
+JWT_AUTH = {'JWT_AUTH_HEADER_PREFIX': 'Bearer', 'JWT_EXPIRATION_DELTA': datetime.timedelta(days=3),
+            'JWT_PAYLOAD_HANDLER': custom_jwt_payload_handler}
