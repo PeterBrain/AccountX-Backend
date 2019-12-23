@@ -17,10 +17,16 @@ class CompanySerializer(serializers.ModelSerializer, ObjectPermissionsAssignment
     def get_permissions_map(self, created):
         current_user = self.context['request'].user
         company = self.data['id']
-        admins = Group.objects.create(
-            name="company" + str(company) + '_admins')
-        accountants = Group.objects.create(
-            name="company" + str(company)+'_accountants')
+        if(Group.objects.filter(name="company" + str(company)+'_accountants').exists()):
+            admins = Group.objects.get(
+                name="company" + str(company) + '_admins')
+            accountants = Group.objects.get(
+                name="company" + str(company)+'_accountants')
+        else:
+            admins = Group.objects.create(
+                name="company" + str(company) + '_admins')
+            accountants = Group.objects.create(
+                name="company" + str(company)+'_accountants')
         current_user.groups.add(admins)
         current_user.groups.add(accountants)
         assign_perm("change_group", admins, admins)
