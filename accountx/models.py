@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 
 
-class Company (models.Model):
+class Company(models.Model):
     name = models.TextField()
     description = models.TextField(null=True)
     def __str__(self):

@@ -1,0 +1,18 @@
+[
+  {
+    "model": "accountx.bookingType",
+    "pk": 1,
+    "fields": {
+      "company": 1,
+      "name": "sell"
+    }
+  },
+  {
+    "model": "accountx.bookingType",
+    "pk": 2,
+    "fields": {
+      "company": 1,
+      "name": "purchase"
+    }
+  }
+]

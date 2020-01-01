@@ -1,0 +1,106 @@
+[
+  {
+    "model": "accountx.booking",
+    "pk": 1,
+    "fields": {
+      "company": 1,
+      "bookingType": 1,
+      "isNegative": false,
+      "name": "Booking 1",
+      "cashflowdate": "2019-12-13",
+      "amount": 123,
+      "invoice": ""
+    }
+  },
+  {
+    "model": "accountx.booking",
+    "pk": 2,
+    "fields": {
+      "company": 1,
+      "bookingType": 2,
+      "isNegative": true,
+      "name": "Booking 2",
+      "cashflowdate": "2019-12-13",
+      "amount": 123,
+      "invoice": ""
+    }
+  },
+  {
+    "model": "accountx.booking",
+    "pk": 3,
+    "fields": {
+      "company": 1,
+      "bookingType": 2,
+      "isNegative": true,
+      "name": "Booking 2",
+      "cashflowdate": "2019-12-13",
+      "amount": 123,
+      "invoice": ""
+    }
+  },
+  {
+    "model": "accountx.booking",
+    "pk": 4,
+    "fields": {
+      "company": 1,
+      "bookingType": 2,
+      "isNegative": true,
+      "name": "Booking 2",
+      "cashflowdate": "2019-12-13",
+      "amount": 123,
+      "invoice": ""
+    }
+  },
+  {
+    "model": "accountx.booking",
+    "pk": 5,
+    "fields": {
+      "company": 1,
+      "bookingType": 2,
+      "isNegative": true,
+      "name": "Booking 2",
+      "cashflowdate": "2019-12-13",
+      "amount": 123,
+      "invoice": ""
+    }
+  },
+  {
+    "model": "accountx.booking",
+    "pk": 6,
+    "fields": {
+      "company": 1,
+      "bookingType": 2,
+      "isNegative": true,
+      "name": "Booking 2",
+      "cashflowdate": "2019-12-13",
+      "amount": 123,
+      "invoice": ""
+    }
+  },
+  {
+    "model": "accountx.booking",
+    "pk": 7,
+    "fields": {
+      "company": 1,
+      "bookingType": 2,
+      "isNegative": true,
+      "name": "Booking 2",
+      "cashflowdate": "2019-12-13",
+      "amount": 123,
+      "invoice": ""
+    }
+  },
+  {
+    "model": "accountx.booking",
+    "pk": 8,
+    "fields": {
+      "company": 1,
+      "bookingType": 2,
+      "isNegative": true,
+      "name": "Booking 2",
+      "cashflowdate": "2019-12-13",
+      "amount": 123,
+      "invoice": ""
+    }
+  }
+]

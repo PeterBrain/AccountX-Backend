@@ -1,0 +1,18 @@
+[
+  {
+    "model": "accountx.company",
+    "pk": 1,
+    "fields": {
+      "name": "Company 1",
+      "description": "Company 1"
+    }
+  },
+  {
+    "model": "accountx.company",
+    "pk": 2,
+    "fields": {
+      "name": "Company 2",
+      "description": "Company 2"
+    }
+  }
+]
