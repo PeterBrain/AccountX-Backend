@@ -21,16 +21,17 @@ from . import models, serializers
 
 
 class SaleFilter(filters.FilterSet):
-    timestamp = filters.DateFromToRangeFilter('cashflowdate')
-
+    cashflowdate = filters.DateFromToRangeFilter('cashflowdate')
+    invDate = filters.DateFromToRangeFilter('invDate')
     class Meta:
         model = models.Sale
-        fields = ('company', 'timestamp')
+        fields = ('company', 'cashflowdate','invDate')
 class PurchaseFilter(filters.FilterSet):
-    timestamp = filters.DateFromToRangeFilter('cashflowdate')
+    cashflowdate = filters.DateFromToRangeFilter('cashflowdate')
+    invDate = filters.DateFromToRangeFilter('invDate')
     class Meta:
         model = models.Purchase
-        fields = ('company', 'timestamp')
+        fields = ('company', 'cashflowdate','invDate')
 
 class CompanyViewSet(viewsets.ModelViewSet):
     queryset = models.Company.objects.all()
