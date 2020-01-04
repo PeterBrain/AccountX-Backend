@@ -40,9 +40,9 @@ class CompanySerializer(serializers.ModelSerializer, ObjectPermissionsAssignment
         }
 
 
-class BookingSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMixin):
+class SaleSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMixin):
     class Meta:
-        model = models.Booking
+        model = models.Sale
         fields = '__all__'
 
     def validate(self, data):
@@ -59,11 +59,33 @@ class BookingSerializer(serializers.ModelSerializer, ObjectPermissionsAssignment
         accountants = Group.objects.get(
             name="company" + str(company)+'_accountants')
         return {
-            'view_booking': [admins, accountants],
-            'change_booking': [admins, accountants],
-            'delete_booking': [admins, accountants]
+            'view_sale': [admins, accountants],
+            'change_sale': [admins, accountants],
+            'delete_sale': [admins, accountants]
         }
+class PurchaseSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMixin):
+    class Meta:
+        model = models.Purchase
+        fields = '__all__'
 
+    def validate(self, data):
+        company = data['company']
+        bt = data['bookingType']
+        if self.context['request'].user.has_perm("view_company", company) and self.context['request'].user.has_perm("view_bookingtype", bt):
+            return data
+        else:
+            raise PermissionDenied()
+
+    def get_permissions_map(self, created):
+        company = self.data['company']
+        admins = Group.objects.get(name="company" + str(company) + '_admins')
+        accountants = Group.objects.get(
+            name="company" + str(company)+'_accountants')
+        return {
+            'view_purchase': [admins, accountants],
+            'change_purchase': [admins, accountants],
+            'delete_purchase': [admins, accountants]
+        }
 
 class BookingTypeSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMixin):
     class Meta:
@@ -107,9 +129,13 @@ class UserSerializer(serializers.ModelSerializer):
         user = super(UserSerializer, self).create(validated_data)
         user.set_password(validated_data['password'])
         user.user_permissions.add(
-            Permission.objects.get(name='Can add booking'))
+            Permission.objects.get(name='Can add sale'))
         user.user_permissions.add(
-            Permission.objects.get(name='Can delete booking'))
+            Permission.objects.get(name='Can delete sale'))
+        user.user_permissions.add(
+            Permission.objects.get(name='Can add purchase'))
+        user.user_permissions.add(
+            Permission.objects.get(name='Can delete purchase'))
         user.save()
         return user
     def update(self, instance,validated_data):
@@ -134,19 +160,25 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         user.user_permissions.add(
             Permission.objects.get(name='Can add company'))
         user.user_permissions.add(
-            Permission.objects.get(name='Can add booking'))
+            Permission.objects.get(name='Can add sale'))
+        user.user_permissions.add(
+            Permission.objects.get(name='Can add purchase'))
         user.user_permissions.add(
             Permission.objects.get(name='Can add booking type'))
         user.user_permissions.add(
             Permission.objects.get(name='Can delete company'))
         user.user_permissions.add(
-            Permission.objects.get(name='Can delete booking'))
+            Permission.objects.get(name='Can delete sale'))
+        user.user_permissions.add(
+            Permission.objects.get(name='Can delete purchase'))
         user.user_permissions.add(
             Permission.objects.get(name='Can delete booking type'))
         user.user_permissions.add(
             Permission.objects.get(name='Can change company'))
         user.user_permissions.add(
-            Permission.objects.get(name='Can change booking'))
+            Permission.objects.get(name='Can change sale'))
+        user.user_permissions.add(
+            Permission.objects.get(name='Can change purchase'))
         user.user_permissions.add(
             Permission.objects.get(name='Can change booking type'))
 

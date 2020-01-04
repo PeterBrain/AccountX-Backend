@@ -20,25 +20,34 @@ from rest_framework_guardian import filters as guardianFilters
 from . import models, serializers
 
 
-class BookingFilter(filters.FilterSet):
+class SaleFilter(filters.FilterSet):
     timestamp = filters.DateFromToRangeFilter('cashflowdate')
 
     class Meta:
-        model = models.Booking
-        fields = ('company', 'name', 'timestamp')
-
+        model = models.Sale
+        fields = ('company', 'timestamp')
+class PurchaseFilter(filters.FilterSet):
+    timestamp = filters.DateFromToRangeFilter('cashflowdate')
+    class Meta:
+        model = models.Purchase
+        fields = ('company', 'timestamp')
 
 class CompanyViewSet(viewsets.ModelViewSet):
     queryset = models.Company.objects.all()
     serializer_class = serializers.CompanySerializer
     filter_backends = [filters.DjangoFilterBackend,
                        guardianFilters.ObjectPermissionsFilter]
+class SaleViewSet(viewsets.ModelViewSet):
+    queryset = models.Sale.objects.all()
+    serializer_class = serializers.SaleSerializer
+    filterset_class = SaleFilter
+    filter_backends = [filters.DjangoFilterBackend,
+                       guardianFilters.ObjectPermissionsFilter]
 
-
-class BookingViewSet(viewsets.ModelViewSet):
-    queryset = models.Booking.objects.all()
-    serializer_class = serializers.BookingSerializer
-    filterset_class = BookingFilter
+class PurchaseViewSet(viewsets.ModelViewSet):
+    queryset = models.Purchase.objects.all()
+    serializer_class = serializers.PurchaseSerializer
+    filterset_class = PurchaseFilter
     filter_backends = [filters.DjangoFilterBackend,
                        guardianFilters.ObjectPermissionsFilter]
 
