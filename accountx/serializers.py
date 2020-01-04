@@ -41,10 +41,15 @@ class CompanySerializer(serializers.ModelSerializer, ObjectPermissionsAssignment
 
 
 class SaleSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMixin):
+    gross = serializers.SerializerMethodField()
+    invNo = serializers.SerializerMethodField()
     class Meta:
         model = models.Sale
         fields = '__all__'
-
+    def get_gross(self,obj):
+        return obj.net * (1+(obj.ust/100))
+    def get_invNo(self, obj):
+        return str(obj.invDate.year) + str(obj.id) 
     def validate(self, data):
         company = data['company']
         bt = data['bookingType']
@@ -52,7 +57,6 @@ class SaleSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMix
             return data
         else:
             raise PermissionDenied()
-
     def get_permissions_map(self, created):
         company = self.data['company']
         admins = Group.objects.get(name="company" + str(company) + '_admins')
@@ -64,10 +68,12 @@ class SaleSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMix
             'delete_sale': [admins, accountants]
         }
 class PurchaseSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMixin):
+    gross = serializers.SerializerMethodField()
     class Meta:
         model = models.Purchase
         fields = '__all__'
-
+    def get_gross(self,obj):
+        return obj.net * (1+(obj.ust/100))
     def validate(self, data):
         company = data['company']
         bt = data['bookingType']

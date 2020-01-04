@@ -26,23 +26,20 @@ class Media(models.Model):
 class Sale(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     bookingType = models.ForeignKey(BookingType, on_delete=models.CASCADE)
-    invNumber = models.IntegerField()
     invDate = models.DateField()
     customer = models.TextField()
     project = models.TextField()
     ust = models.FloatField()
-    gross = models.FloatField()
     net = models.FloatField()
     cashflowdate = models.DateField()
     invoice = models.ManyToManyField('Media', blank=True)
-
     def __str__(self):
-        return self.invNumber
+        return str(self.invDate.year) + str(self.pk) 
 
 class Purchase(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     bookingType = models.ForeignKey(BookingType, on_delete=models.CASCADE)
-    invNumber = models.TextField()
+    invNo = models.TextField()
     invDate = models.DateField()
     biller = models.TextField()
     ust = models.FloatField()
@@ -51,4 +48,4 @@ class Purchase(models.Model):
     invoice = models.ManyToManyField('Media', blank=True)
 
     def __str__(self):
-        return self.invNumber
+        return self.invNo
