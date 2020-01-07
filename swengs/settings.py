@@ -151,3 +151,10 @@ def custom_jwt_payload_handler(user):
 
 JWT_AUTH = {'JWT_AUTH_HEADER_PREFIX': 'Bearer', 'JWT_EXPIRATION_DELTA': datetime.timedelta(days=3),
             'JWT_PAYLOAD_HANDLER': custom_jwt_payload_handler}
+
+'''
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 1
+}
+'''
