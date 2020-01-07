@@ -11,11 +11,14 @@ from guardian.shortcuts import (assign_perm, get_objects_for_group,
                                 get_objects_for_user)
 from rest_framework import exceptions, viewsets
 from rest_framework.decorators import api_view
+from rest_framework.exceptions import APIException, PermissionDenied
 from rest_framework.parsers import FormParser, MultiPartParser
 from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_guardian import filters as guardianFilters
+
+from accountx.views import User
 
 from . import models, serializers
 
@@ -23,27 +26,54 @@ from . import models, serializers
 class SaleFilter(filters.FilterSet):
     cashflowdate = filters.DateFromToRangeFilter('cashflowdate')
     invDate = filters.DateFromToRangeFilter('invDate')
+
     class Meta:
         model = models.Sale
-        fields = ('company', 'cashflowdate','invDate')
+        fields = ('company', 'cashflowdate', 'invDate')
+
+
 class PurchaseFilter(filters.FilterSet):
     cashflowdate = filters.DateFromToRangeFilter('cashflowdate')
     invDate = filters.DateFromToRangeFilter('invDate')
+
     class Meta:
         model = models.Purchase
-        fields = ('company', 'cashflowdate','invDate')
+        fields = ('company', 'cashflowdate', 'invDate')
+
 
 class CompanyViewSet(viewsets.ModelViewSet):
     queryset = models.Company.objects.all()
     serializer_class = serializers.CompanySerializer
     filter_backends = [filters.DjangoFilterBackend,
                        guardianFilters.ObjectPermissionsFilter]
+
+
 class SaleViewSet(viewsets.ModelViewSet):
     queryset = models.Sale.objects.all()
     serializer_class = serializers.SaleSerializer
     filterset_class = SaleFilter
     filter_backends = [filters.DjangoFilterBackend,
                        guardianFilters.ObjectPermissionsFilter]
+
+
+class UstReportViewset(viewsets.ViewSet):
+    permission_classes = [IsAuthenticated]
+    serializer_class = serializers.UstReportSerializer
+
+    def list(self, request):
+        before = request.query_params.get("before")
+        after = request.query_params.get("after")
+        cid = request.query_params.get("cid")
+        if(cid is None or before is None or after is None):
+            raise APIException(detail="Url parameters missing")
+        company = get_object_or_404(models.Company, pk=cid)
+        if (not request.user.has_perm("view_company", company)):
+            raise PermissionDenied
+        outData = [{"company": cid, "ustIn": 10, "ustOut": 25}] # TODO: Calculate UST
+        results = serializers.UstReportSerializer(
+            instance=outData, many=True).data
+        return Response(results)
+
 
 class PurchaseViewSet(viewsets.ModelViewSet):
     queryset = models.Purchase.objects.all()

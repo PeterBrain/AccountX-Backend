@@ -116,7 +116,10 @@ class BookingTypeSerializer(serializers.ModelSerializer, ObjectPermissionsAssign
             'delete_bookingtype': [admins]
         }
 
-
+class UstReportSerializer(serializers.Serializer):
+    company = serializers.IntegerField()
+    ustIn = serializers.FloatField()
+    ustOut = serializers.FloatField()
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 

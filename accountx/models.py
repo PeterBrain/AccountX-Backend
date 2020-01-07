@@ -5,6 +5,7 @@ from django.db import models
 class Company(models.Model):
     name = models.TextField()
     description = models.TextField(null=True)
+
     def __str__(self):
         return self.name
 
@@ -32,10 +33,12 @@ class Sale(models.Model):
     ust = models.FloatField()
     net = models.FloatField()
     notes = models.TextField(blank=True)
-    cashflowdate = models.DateField()
+    cashflowdate = models.DateField(blank=True)
     invoice = models.ManyToManyField('Media', blank=True)
+
     def __str__(self):
-        return str(self.invDate.year) + str(self.pk) 
+        return str(self.invDate.year) + str(self.pk)
+
 
 class Purchase(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
@@ -45,7 +48,7 @@ class Purchase(models.Model):
     biller = models.TextField()
     ust = models.FloatField()
     net = models.FloatField()
-    cashflowdate = models.DateField()
+    cashflowdate = models.DateField(blank=True)
     notes = models.TextField(blank=True)
     invoice = models.ManyToManyField('Media', blank=True)
 
