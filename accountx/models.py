@@ -33,7 +33,7 @@ class Sale(models.Model):
     ust = models.FloatField()
     net = models.FloatField()
     notes = models.TextField(blank=True)
-    cashflowdate = models.DateField(blank=True)
+    cashflowdate = models.DateField(null=True)
     invoice = models.ManyToManyField('Media', blank=True)
 
     def __str__(self):
@@ -48,7 +48,7 @@ class Purchase(models.Model):
     biller = models.TextField()
     ust = models.FloatField()
     net = models.FloatField()
-    cashflowdate = models.DateField(blank=True)
+    cashflowdate = models.DateField(null=True)
     notes = models.TextField(blank=True)
     invoice = models.ManyToManyField('Media', blank=True)
 

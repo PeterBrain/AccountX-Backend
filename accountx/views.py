@@ -69,7 +69,13 @@ class UstReportViewset(viewsets.ViewSet):
         company = get_object_or_404(models.Company, pk=cid)
         if (not request.user.has_perm("view_company", company)):
             raise PermissionDenied
-        outData = [{"company": cid, "ustIn": 10, "ustOut": 25}] # TODO: Calculate UST
+        sales = models.Sale.objects.filter(
+            company=company, cashflowdate__range=[after, before])
+        purchases = models.Purchase.objects.filter(
+            company=company, cashflowdate__range=[after, before])
+        ustIn = sum((sale.ust/100)*sale.net for sale in sales)
+        ustOut = sum((purchase.ust/100)*purchase.net for purchase in purchases)
+        outData = [{"company": cid, "ustIn": ustIn, "ustOut": ustOut}]
         results = serializers.UstReportSerializer(
             instance=outData, many=True).data
         return Response(results)
