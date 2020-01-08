@@ -14,5 +14,6 @@ python manage.py migrate
 ```shell
 python manage.py loaddata initial_companies
 python manage.py loaddata initial_bookingTypes
-python manage.py loaddata initial_bookings
+python manage.py loaddata initial_sales
+python manage.py loaddata initial_purchases
 ```
