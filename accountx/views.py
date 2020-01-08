@@ -98,7 +98,6 @@ class BookingTypeViewSet(viewsets.ModelViewSet):
 
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.UserSerializer
-
     def get_permissions(self):
         if self.action == "create":
             permission_classes = [AllowAny]
@@ -120,7 +119,6 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = serializers.GroupSerializer
-
     def get_queryset(self):
         return get_objects_for_user(self.request.user, "change_group", klass=Group)
 
