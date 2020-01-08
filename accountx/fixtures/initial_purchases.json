@@ -6,11 +6,11 @@
       "company": 1,
       "bookingType": 1,
       "invNo": "1111",
-      "invDate": "2019-12-02",
+      "invDate": "2020-02-02",
       "biller": "Customer 1",
       "ust": 0.2,
       "net": 1456,
-      "cashflowdate": "2019-12-13",
+      "cashflowdate": "2020-02-13",
       "notes": "Note 1",
       "invoice": ""
     }
@@ -22,11 +22,11 @@
       "company": 4,
       "bookingType": 8,
       "invNo": "1112",
-      "invDate": "2019-12-02",
+      "invDate": "2020-03-02",
       "biller": "Customer 2",
       "ust": 0.1,
       "net": 3452,
-      "cashflowdate": "2019-12-13",
+      "cashflowdate": "2020-03-13",
       "notes": "Note 2",
       "invoice": ""
     }
@@ -38,11 +38,11 @@
       "company": 2,
       "bookingType": 3,
       "invNo": "1113",
-      "invDate": "2019-12-02",
+      "invDate": "2020-05-02",
       "biller": "Customer 3",
       "ust": 0.2,
       "net": 34,
-      "cashflowdate": "2019-12-13",
+      "cashflowdate": "2020-05-13",
       "notes": "Note 3",
       "invoice": ""
     }
@@ -54,11 +54,11 @@
       "company": 1,
       "bookingType": 2,
       "invNo": "1114",
-      "invDate": "2019-12-02",
+      "invDate": "2020-07-02",
       "biller": "Customer 4",
       "ust": 0.2,
       "net": 876,
-      "cashflowdate": "2019-12-13",
+      "cashflowdate": "2020-07-13",
       "notes": "Note 4",
       "invoice": ""
     }
@@ -70,11 +70,11 @@
       "company": 4,
       "bookingType": 7,
       "invNo": "1115",
-      "invDate": "2019-12-02",
+      "invDate": "2020-07-02",
       "biller": "Customer 5",
       "ust": 0.2,
       "net": 1233,
-      "cashflowdate": "2019-12-13",
+      "cashflowdate": "2020-07-13",
       "notes": "Note 5",
       "invoice": ""
     }
@@ -86,11 +86,11 @@
       "company": 3,
       "bookingType": 5,
       "invNo": "1116",
-      "invDate": "2019-12-02",
+      "invDate": "2020-10-02",
       "biller": "Customer 6",
       "ust": 0.2,
       "net": 765,
-      "cashflowdate": "2019-12-13",
+      "cashflowdate": "2020-10-13",
       "notes": "Note 6",
       "invoice": ""
     }
@@ -102,11 +102,11 @@
       "company": 3,
       "bookingType": 6,
       "invNo": "1117",
-      "invDate": "2019-12-02",
+      "invDate": "2020-11-02",
       "biller": "Customer 7",
       "ust": 0.13,
       "net": 3432,
-      "cashflowdate": "2019-12-13",
+      "cashflowdate": "2020-11-13",
       "notes": "Note 7",
       "invoice": ""
     }
@@ -118,11 +118,11 @@
       "company": 1,
       "bookingType": 2,
       "invNo": "1118",
-      "invDate": "2019-12-02",
+      "invDate": "2020-11-02",
       "biller": "Customer 8",
       "ust": 0.2,
       "net": 897,
-      "cashflowdate": "2019-12-13",
+      "cashflowdate": "2020-11-13",
       "notes": "Note 8",
       "invoice": ""
     }
@@ -134,11 +134,11 @@
       "company": 2,
       "bookingType": 4,
       "invNo": "1119",
-      "invDate": "2019-12-02",
+      "invDate": "2020-12-02",
       "biller": "Customer 9",
       "ust": 0.2,
       "net": 258,
-      "cashflowdate": "2019-12-13",
+      "cashflowdate": "2020-12-13",
       "notes": "Note 9",
       "invoice": ""
     }
@@ -150,11 +150,11 @@
       "company": 1,
       "bookingType": 2,
       "invNo": "1120",
-      "invDate": "2019-12-02",
+      "invDate": "2020-12-02",
       "biller": "Customer 10",
       "ust": 0.1,
       "net": 8765,
-      "cashflowdate": "2019-12-13",
+      "cashflowdate": "2020-12-13",
       "notes": "Note 10",
       "invoice": ""
     }

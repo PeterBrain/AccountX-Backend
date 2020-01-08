@@ -5,13 +5,13 @@
     "fields": {
       "company": 4,
       "bookingType": 7,
-      "invDate": "2019-12-02",
+      "invDate": "2020-01-02",
       "customer": "Customer 1",
       "project": "Project 1",
       "ust": 0.1,
       "net": 1000,
       "notes": "Sale 1",
-      "cashflowdate": "2019-12-13",
+      "cashflowdate": "2020-01-13",
       "invoice": ""
     }
   },
@@ -21,13 +21,13 @@
     "fields": {
       "company": 3,
       "bookingType": 6,
-      "invDate": "2019-12-04",
+      "invDate": "2020-04-04",
       "customer": "Customer 2",
       "project": "Project 2",
       "ust": 0.2,
       "net": 4576,
       "notes": "Sale 2",
-      "cashflowdate": "2019-12-16",
+      "cashflowdate": "2020-04-16",
       "invoice": ""
     }
   },
@@ -37,13 +37,13 @@
     "fields": {
       "company": 1,
       "bookingType": 1,
-      "invDate": "2019-12-04",
+      "invDate": "2020-05-04",
       "customer": "Customer 3",
       "project": "Project 3",
       "ust": 0.2,
       "net": 123,
       "notes": "Sale 2",
-      "cashflowdate": "2019-12-16",
+      "cashflowdate": "2020-05-16",
       "invoice": ""
     }
   },
@@ -53,13 +53,13 @@
     "fields": {
       "company": 4,
       "bookingType": 8,
-      "invDate": "2019-12-04",
+      "invDate": "2020-05-04",
       "customer": "Customer 4",
       "project": "Project 4",
       "ust": 0.2,
       "net": 543,
       "notes": "Sale 2",
-      "cashflowdate": "2019-12-16",
+      "cashflowdate": "2020-05-16",
       "invoice": ""
     }
   },
@@ -69,13 +69,13 @@
     "fields": {
       "company": 2,
       "bookingType": 4,
-      "invDate": "2019-12-04",
+      "invDate": "2020-06-04",
       "customer": "Customer 5",
       "project": "Project 5",
       "ust": 0.2,
       "net": 8765,
       "notes": "Sale 2",
-      "cashflowdate": "2019-12-16",
+      "cashflowdate": "2020-06-16",
       "invoice": ""
     }
   },
@@ -85,13 +85,13 @@
     "fields": {
       "company": 2,
       "bookingType": 3,
-      "invDate": "2019-12-04",
+      "invDate": "2020-08-04",
       "customer": "Customer 6",
       "project": "Project 6",
       "ust": 0.1,
       "net": 32434,
       "notes": "Sale 2",
-      "cashflowdate": "2019-12-16",
+      "cashflowdate": "2020-08-16",
       "invoice": ""
     }
   },
@@ -101,13 +101,13 @@
     "fields": {
       "company": 1,
       "bookingType": 1,
-      "invDate": "2019-12-04",
+      "invDate": "2020-08-04",
       "customer": "Customer 7",
       "project": "Project 7",
       "ust": 0.2,
       "net": 12343,
       "notes": "Sale 2",
-      "cashflowdate": "2019-12-16",
+      "cashflowdate": "2020-08-16",
       "invoice": ""
     }
   },
@@ -117,13 +117,13 @@
     "fields": {
       "company": 2,
       "bookingType": 3,
-      "invDate": "2019-12-04",
+      "invDate": "2020-08-04",
       "customer": "Customer 8",
       "project": "Project 8",
       "ust": 0.13,
       "net": 12,
       "notes": "Sale 2",
-      "cashflowdate": "2019-12-16",
+      "cashflowdate": "2020-08-16",
       "invoice": ""
     }
   },
@@ -133,13 +133,13 @@
     "fields": {
       "company": 1,
       "bookingType": 3,
-      "invDate": "2019-12-04",
+      "invDate": "2020-09-04",
       "customer": "Customer 9",
       "project": "Project 9",
       "ust": 0.2,
       "net": 987,
       "notes": "Sale 2",
-      "cashflowdate": "2019-12-16",
+      "cashflowdate": "2020-09-16",
       "invoice": ""
     }
   },
@@ -149,13 +149,13 @@
     "fields": {
       "company": 3,
       "bookingType": 6,
-      "invDate": "2019-12-04",
+      "invDate": "2020-12-04",
       "customer": "Customer 10",
       "project": "Project 10",
       "ust": 0.1,
       "net": 3434,
       "notes": "Sale 2",
-      "cashflowdate": "2019-12-16",
+      "cashflowdate": "2020-12-16",
       "invoice": ""
     }
   }
