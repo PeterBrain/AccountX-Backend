@@ -73,8 +73,8 @@ class UstReportViewset(viewsets.ViewSet):
             company=company, cashflowdate__range=[after, before])
         purchases = models.Purchase.objects.filter(
             company=company, cashflowdate__range=[after, before])
-        ustIn = sum((sale.ust/100)*sale.net for sale in sales)
-        ustOut = sum((purchase.ust/100)*purchase.net for purchase in purchases)
+        ustIn = sum(sale.ust*sale.net for sale in sales)
+        ustOut = sum(purchase.ust*purchase.net for purchase in purchases)
         outData = [{"company": cid, "ustIn": ustIn, "ustOut": ustOut}]
         results = serializers.UstReportSerializer(
             instance=outData, many=True).data
@@ -96,14 +96,7 @@ class BookingTypeViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.DjangoFilterBackend,
                        guardianFilters.ObjectPermissionsFilter]
 
-    def get_queryset(self):
-        queryset = get_objects_for_user(
-            self.request.user, "view_bookingtype", any_perm=True, klass=models.BookingType)
-        return queryset
-
-
 class UserViewSet(viewsets.ModelViewSet):
-    queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
 
     def get_permissions(self):
@@ -126,7 +119,6 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Group.objects.all()
     serializer_class = serializers.GroupSerializer
 
     def get_queryset(self):
