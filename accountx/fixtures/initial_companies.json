@@ -14,5 +14,21 @@
       "name": "Company 2",
       "description": "Company 2"
     }
+  },
+  {
+    "model": "accountx.company",
+    "pk": 3,
+    "fields": {
+      "name": "Company 3",
+      "description": "Company 3"
+    }
+  },
+  {
+    "model": "accountx.company",
+    "pk": 4,
+    "fields": {
+      "name": "Company 4",
+      "description": "Company 4"
+    }
   }
 ]

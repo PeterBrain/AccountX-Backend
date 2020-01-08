@@ -4,7 +4,7 @@
     "pk": 1,
     "fields": {
       "company": 1,
-      "name": "sell"
+      "name": "AAA"
     }
   },
   {
@@ -12,7 +12,55 @@
     "pk": 2,
     "fields": {
       "company": 1,
-      "name": "purchase"
+      "name": "BBB"
+    }
+  },
+  {
+    "model": "accountx.bookingType",
+    "pk": 3,
+    "fields": {
+      "company": 2,
+      "name": "AAA"
+    }
+  },
+  {
+    "model": "accountx.bookingType",
+    "pk": 4,
+    "fields": {
+      "company": 2,
+      "name": "BBB"
+    }
+  },
+  {
+    "model": "accountx.bookingType",
+    "pk": 5,
+    "fields": {
+      "company": 3,
+      "name": "AAA"
+    }
+  },
+  {
+    "model": "accountx.bookingType",
+    "pk": 6,
+    "fields": {
+      "company": 3,
+      "name": "BBB"
+    }
+  },
+  {
+    "model": "accountx.bookingType",
+    "pk": 7,
+    "fields": {
+      "company": 4,
+      "name": "AAA"
+    }
+  },
+  {
+    "model": "accountx.bookingType",
+    "pk": 8,
+    "fields": {
+      "company": 4,
+      "name": "BBB"
     }
   }
 ]
