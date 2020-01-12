@@ -43,13 +43,17 @@ class CompanySerializer(serializers.ModelSerializer, ObjectPermissionsAssignment
 class SaleSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMixin):
     gross = serializers.SerializerMethodField()
     invNo = serializers.SerializerMethodField()
+
     class Meta:
         model = models.Sale
         fields = '__all__'
-    def get_gross(self,obj):
+
+    def get_gross(self, obj):
         return obj.net * (1+obj.ust)
+
     def get_invNo(self, obj):
-        return str(obj.invDate.year) + str(obj.id) 
+        return str(obj.invDate.year) + str(obj.id)
+
     def validate(self, data):
         company = data['company']
         bt = data['bookingType']
@@ -57,6 +61,7 @@ class SaleSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMix
             return data
         else:
             raise PermissionDenied()
+
     def get_permissions_map(self, created):
         company = self.data['company']
         admins = Group.objects.get(name="company" + str(company) + '_admins')
@@ -67,13 +72,18 @@ class SaleSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMix
             'change_sale': [admins, accountants],
             'delete_sale': [admins, accountants]
         }
+
+
 class PurchaseSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMixin):
     gross = serializers.SerializerMethodField()
+
     class Meta:
         model = models.Purchase
         fields = '__all__'
-    def get_gross(self,obj):
+
+    def get_gross(self, obj):
         return obj.net * (1+obj.ust)
+
     def validate(self, data):
         company = data['company']
         bt = data['bookingType']
@@ -92,6 +102,7 @@ class PurchaseSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmen
             'change_purchase': [admins, accountants],
             'delete_purchase': [admins, accountants]
         }
+
 
 class BookingTypeSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMixin):
     class Meta:
@@ -116,16 +127,25 @@ class BookingTypeSerializer(serializers.ModelSerializer, ObjectPermissionsAssign
             'delete_bookingtype': [admins]
         }
 
+
 class UstReportSerializer(serializers.Serializer):
     company = serializers.IntegerField()
     ustIn = serializers.FloatField()
     ustOut = serializers.FloatField()
+
+
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
+    companies = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'groups']
+        fields = ['username', 'email', 'password', 'groups', 'companies']
+
+    def get_companies(self, obj):
+        userCompanies = get_objects_for_user(
+            obj, "view_company", klass=models.Company)
+        return [x.id for x in userCompanies]
 
     def validate(self, data):
         groups = data['groups']
@@ -147,7 +167,8 @@ class UserSerializer(serializers.ModelSerializer):
             Permission.objects.get(name='Can delete purchase'))
         user.save()
         return user
-    def update(self, instance,validated_data):
+
+    def update(self, instance, validated_data):
         if validated_data['password'] is not None:
             instance.set_password(validated_data['password'])
         if validated_data['email'] is not None:

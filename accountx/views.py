@@ -8,7 +8,7 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django_filters import rest_framework as filters
 from guardian.shortcuts import (assign_perm, get_objects_for_group,
-                                get_objects_for_user)
+                                get_objects_for_user, get_users_with_perms)
 from rest_framework import exceptions, viewsets
 from rest_framework.decorators import api_view
 from rest_framework.exceptions import APIException, PermissionDenied
@@ -30,6 +30,22 @@ class SaleFilter(filters.FilterSet):
     class Meta:
         model = models.Sale
         fields = ('company', 'cashflowdate', 'invDate')
+
+
+class UserFilter(filters.FilterSet):
+    cid = filters.NumberFilter(method='filter_companies', label='cid')
+
+    def filter_companies(self, queryset, name, value):
+        company = get_objects_for_user(
+            self.request.user, "view_company", klass=models.Company).filter(pk=value)
+        if company.exists():
+            return get_users_with_perms(company.first())
+        else:
+            return User.objects.none()
+
+    class Meta:
+        model = User
+        fields = ['cid']
 
 
 class PurchaseFilter(filters.FilterSet):
@@ -96,8 +112,11 @@ class BookingTypeViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.DjangoFilterBackend,
                        guardianFilters.ObjectPermissionsFilter]
 
+
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.UserSerializer
+    filterset_class = UserFilter
+
     def get_permissions(self):
         if self.action == "create":
             permission_classes = [AllowAny]
@@ -119,6 +138,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = serializers.GroupSerializer
+
     def get_queryset(self):
         return get_objects_for_user(self.request.user, "change_group", klass=Group)
 
