@@ -135,12 +135,12 @@ class UstReportSerializer(serializers.Serializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
+    password = serializers.CharField(write_only=True, required=False)
     companies = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'password', 'groups', 'companies']
+        fields = ['id', 'username', 'email', 'password','first_name','last_name', 'groups', 'companies']
 
     def get_companies(self, obj):
         userCompanies = get_objects_for_user(
@@ -169,10 +169,14 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
     def update(self, instance, validated_data):
-        if validated_data['password'] is not None:
+        if validated_data.get('password') is not None:
             instance.set_password(validated_data['password'])
-        if validated_data['email'] is not None:
+        if validated_data.get('email') is not None:
             instance.email = validated_data['email']
+        if validated_data.get('first_name') is not None:
+            instance.first_name = validated_data['first_name']
+        if validated_data.get('last_name') is not None:
+            instance.last_name = validated_data['last_name']
         instance.save()
         return instance
 
