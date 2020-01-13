@@ -140,7 +140,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'groups', 'companies']
+        fields = ['id', 'username', 'email', 'password', 'groups', 'companies']
 
     def get_companies(self, obj):
         userCompanies = get_objects_for_user(
