@@ -173,6 +173,8 @@ class UserSerializer(serializers.ModelSerializer):
             instance.set_password(validated_data['password'])
         if validated_data.get('email') is not None:
             instance.email = validated_data['email']
+        if validated_data.get('username') is not None:
+            instance.username = validated_data['username']
         if validated_data.get('first_name') is not None:
             instance.first_name = validated_data['first_name']
         if validated_data.get('last_name') is not None:
