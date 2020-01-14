@@ -7,8 +7,9 @@ from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django_filters import rest_framework as filters
-from guardian.shortcuts import (assign_perm, get_objects_for_group,
-                                get_objects_for_user, get_users_with_perms)
+from guardian.shortcuts import (assign_perm, get_groups_with_perms,
+                                get_objects_for_group, get_objects_for_user,
+                                get_users_with_perms)
 from rest_framework import exceptions, viewsets
 from rest_framework.decorators import api_view
 from rest_framework.exceptions import APIException, PermissionDenied
@@ -45,6 +46,22 @@ class UserFilter(filters.FilterSet):
 
     class Meta:
         model = User
+        fields = ['cid']
+
+
+class GroupFilter(filters.FilterSet):
+    cid = filters.NumberFilter(method='filter_companies', label='cid')
+
+    def filter_companies(self, queryset, name, value):
+        company = get_objects_for_user(
+            self.request.user, "view_company", klass=models.Company).filter(pk=value)
+        if company.exists():
+            return get_groups_with_perms(company.first())
+        else:
+            return Group.objects.none()
+
+    class Meta:
+        model = Group
         fields = ['cid']
 
 
@@ -138,7 +155,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = serializers.GroupSerializer
-
+    filterset_class = GroupFilter
     def get_queryset(self):
         return get_objects_for_user(self.request.user, "change_group", klass=Group)
 

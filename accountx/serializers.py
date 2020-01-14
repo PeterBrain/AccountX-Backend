@@ -140,7 +140,8 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'password','first_name','last_name', 'groups', 'companies']
+        fields = ['id', 'username', 'email', 'password',
+                  'first_name', 'last_name', 'groups', 'companies']
 
     def get_companies(self, obj):
         userCompanies = get_objects_for_user(
@@ -188,7 +189,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password']
+        fields = ['username', 'email', 'password', 'first_name', 'last_name']
 
     def create(self, validated_data):
         user = super(RegisterUserSerializer, self).create(validated_data)
@@ -223,9 +224,16 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
 
 class GroupSerializer(serializers.ModelSerializer):
+    companies = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = Group
         fields = "__all__"
+
+    def get_companies(self, obj):
+        groupCompanies = get_objects_for_group(
+            obj, "view_company", klass=models.Company)
+        return [x.id for x in groupCompanies]
 
 
 class MediaSerializer(serializers.ModelSerializer):
