@@ -1,6 +1,6 @@
 from django.contrib.auth.models import Group, Permission, User
-from guardian.shortcuts import (assign_perm, get_objects_for_group,
-                                get_objects_for_user)
+from guardian.shortcuts import (assign_perm, get_groups_with_perms,
+                                get_objects_for_group, get_objects_for_user)
 from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
 from rest_framework_guardian.serializers import \
@@ -10,9 +10,15 @@ from . import models
 
 
 class CompanySerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMixin):
+    groups = serializers.SerializerMethodField(read_only=True)
+
     class Meta:
         model = models.Company
         fields = '__all__'
+
+    def get_groups(self, obj):
+        groupsForCompany = get_groups_with_perms(obj)
+        return [x.id for x in groupsForCompany]
 
     def get_permissions_map(self, created):
         current_user = self.context['request'].user
