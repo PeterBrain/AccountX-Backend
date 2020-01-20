@@ -62,8 +62,7 @@ class SaleSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMix
 
     def validate(self, data):
         company = data['company']
-        bt = data['bookingType']
-        if self.context['request'].user.has_perm("view_company", company) and self.context['request'].user.has_perm("view_bookingtype", bt):
+        if self.context['request'].user.has_perm("view_company", company):
             return data
         else:
             raise PermissionDenied()
@@ -92,8 +91,7 @@ class PurchaseSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmen
 
     def validate(self, data):
         company = data['company']
-        bt = data['bookingType']
-        if self.context['request'].user.has_perm("view_company", company) and self.context['request'].user.has_perm("view_bookingtype", bt):
+        if self.context['request'].user.has_perm("view_company", company):
             return data
         else:
             raise PermissionDenied()
@@ -107,30 +105,6 @@ class PurchaseSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmen
             'view_purchase': [admins, accountants],
             'change_purchase': [admins, accountants],
             'delete_purchase': [admins, accountants]
-        }
-
-
-class BookingTypeSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMixin):
-    class Meta:
-        model = models.BookingType
-        fields = "__all__"
-
-    def validate(self, data):
-        company = data['company']
-        if self.context['request'].user.has_perm("change_company", company):
-            return data
-        else:
-            raise PermissionDenied()
-
-    def get_permissions_map(self, created):
-        company = self.data['company']
-        admins = Group.objects.get(name="company" + str(company) + '_admins')
-        accountants = Group.objects.get(
-            name="company" + str(company)+'_accountants')
-        return {
-            'view_bookingtype': [admins, accountants],
-            'change_bookingtype': [admins],
-            'delete_bookingtype': [admins]
         }
 
 
@@ -221,8 +195,6 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         user.user_permissions.add(
             Permission.objects.get(name='Can add purchase'))
         user.user_permissions.add(
-            Permission.objects.get(name='Can add booking type'))
-        user.user_permissions.add(
             Permission.objects.get(name='Can add media'))
         user.user_permissions.add(
             Permission.objects.get(name='Can delete company'))
@@ -231,8 +203,6 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         user.user_permissions.add(
             Permission.objects.get(name='Can delete purchase'))
         user.user_permissions.add(
-            Permission.objects.get(name='Can delete booking type'))
-        user.user_permissions.add(
             Permission.objects.get(name='Can delete media'))
         user.user_permissions.add(
             Permission.objects.get(name='Can change company'))
@@ -240,8 +210,6 @@ class RegisterUserSerializer(serializers.ModelSerializer):
             Permission.objects.get(name='Can change sale'))
         user.user_permissions.add(
             Permission.objects.get(name='Can change purchase'))
-        user.user_permissions.add(
-            Permission.objects.get(name='Can change booking type'))
         user.user_permissions.add(
             Permission.objects.get(name='Can change media'))
 

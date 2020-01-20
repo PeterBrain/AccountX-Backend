@@ -10,14 +10,6 @@ class Company(models.Model):
         return self.name
 
 
-class BookingType(models.Model):
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    name = models.TextField()
-
-    def __str__(self):
-        return self.name
-
-
 class Media(models.Model):
     original_file_name = models.TextField()
     content_type = models.TextField()
@@ -27,7 +19,7 @@ class Media(models.Model):
 
 class Sale(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    bookingType = models.ForeignKey(BookingType, on_delete=models.CASCADE)
+    bookingType = models.TextField()
     invDate = models.DateField()
     customer = models.TextField()
     project = models.TextField()
@@ -43,7 +35,7 @@ class Sale(models.Model):
 
 class Purchase(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
-    bookingType = models.ForeignKey(BookingType, on_delete=models.CASCADE)
+    bookingType = models.TextField()
     invNo = models.TextField()
     invDate = models.DateField()
     biller = models.TextField()

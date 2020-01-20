@@ -122,14 +122,6 @@ class PurchaseViewSet(viewsets.ModelViewSet):
                        guardianFilters.ObjectPermissionsFilter]
 
 
-class BookingTypeViewSet(viewsets.ModelViewSet):
-    queryset = models.BookingType.objects.all()
-    serializer_class = serializers.BookingTypeSerializer
-    filterset_fields = ('company', 'name')
-    filter_backends = [filters.DjangoFilterBackend,
-                       guardianFilters.ObjectPermissionsFilter]
-
-
 class UserViewSet(viewsets.ModelViewSet):
     serializer_class = serializers.UserSerializer
     filterset_class = UserFilter
