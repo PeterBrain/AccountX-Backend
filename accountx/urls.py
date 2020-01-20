@@ -9,7 +9,7 @@ router.register(r'sales', views.SaleViewSet)
 router.register(r'purchases', views.PurchaseViewSet)
 router.register(r'bookingTypes', views.BookingTypeViewSet)
 router.register(r'users',views.UserViewSet, basename="users")
-router.register(r'ustReport',views.UstReportViewset, basename="ustreport")
+router.register(r'vatReport',views.VatReportViewset, basename="vatreport")
 router.register(r'groups', views.GroupViewSet, basename="groups")
 urlpatterns = [
     path('', include(router.urls)),

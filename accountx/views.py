@@ -89,9 +89,9 @@ class SaleViewSet(viewsets.ModelViewSet):
                        guardianFilters.ObjectPermissionsFilter]
 
 
-class UstReportViewset(viewsets.ViewSet):
+class VatReportViewset(viewsets.ViewSet):
     permission_classes = [IsAuthenticated]
-    serializer_class = serializers.UstReportSerializer
+    serializer_class = serializers.VatReportSerializer
 
     def list(self, request):
         before = request.query_params.get("before")
@@ -106,10 +106,10 @@ class UstReportViewset(viewsets.ViewSet):
             company=company, cashflowdate__range=[after, before])
         purchases = models.Purchase.objects.filter(
             company=company, cashflowdate__range=[after, before])
-        ustIn = sum(sale.ust*sale.net for sale in sales)
-        ustOut = sum(purchase.ust*purchase.net for purchase in purchases)
-        outData = [{"company": cid, "ustIn": ustIn, "ustOut": ustOut}]
-        results = serializers.UstReportSerializer(
+        vatIn = sum(sale.vat*sale.net for sale in sales)
+        vatOut = sum(purchase.vat*purchase.net for purchase in purchases)
+        outData = [{"company": cid, "vatIn": vatIn, "vatOut": vatOut}]
+        results = serializers.VatReportSerializer(
             instance=outData, many=True).data
         return Response(results)
 

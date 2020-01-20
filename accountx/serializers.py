@@ -55,7 +55,7 @@ class SaleSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMix
         fields = '__all__'
 
     def get_gross(self, obj):
-        return obj.net * (1+obj.ust)
+        return obj.net * (1+obj.vat)
 
     def get_invNo(self, obj):
         return str(obj.invDate.year) + str(obj.id)
@@ -88,7 +88,7 @@ class PurchaseSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmen
         fields = '__all__'
 
     def get_gross(self, obj):
-        return obj.net * (1+obj.ust)
+        return obj.net * (1+obj.vat)
 
     def validate(self, data):
         company = data['company']
@@ -134,10 +134,10 @@ class BookingTypeSerializer(serializers.ModelSerializer, ObjectPermissionsAssign
         }
 
 
-class UstReportSerializer(serializers.Serializer):
+class VatReportSerializer(serializers.Serializer):
     company = serializers.IntegerField()
-    ustIn = serializers.FloatField()
-    ustOut = serializers.FloatField()
+    vatIn = serializers.FloatField()
+    vatOut = serializers.FloatField()
 
 
 class UserSerializer(serializers.ModelSerializer):
