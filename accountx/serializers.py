@@ -172,6 +172,10 @@ class UserSerializer(serializers.ModelSerializer):
             Permission.objects.get(name='Can add purchase'))
         user.user_permissions.add(
             Permission.objects.get(name='Can delete purchase'))
+        user.user_permissions.add(
+            Permission.objects.get(name='Can add media'))
+        user.user_permissions.add(
+            Permission.objects.get(name='Can delete media'))
         user.save()
         return user
 
@@ -209,6 +213,8 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         user.user_permissions.add(
             Permission.objects.get(name='Can add booking type'))
         user.user_permissions.add(
+            Permission.objects.get(name='Can add media'))
+        user.user_permissions.add(
             Permission.objects.get(name='Can delete company'))
         user.user_permissions.add(
             Permission.objects.get(name='Can delete sale'))
@@ -217,6 +223,8 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         user.user_permissions.add(
             Permission.objects.get(name='Can delete booking type'))
         user.user_permissions.add(
+            Permission.objects.get(name='Can delete media'))
+        user.user_permissions.add(
             Permission.objects.get(name='Can change company'))
         user.user_permissions.add(
             Permission.objects.get(name='Can change sale'))
@@ -224,6 +232,8 @@ class RegisterUserSerializer(serializers.ModelSerializer):
             Permission.objects.get(name='Can change purchase'))
         user.user_permissions.add(
             Permission.objects.get(name='Can change booking type'))
+        user.user_permissions.add(
+            Permission.objects.get(name='Can change media'))
 
         user.save()
         return user
@@ -242,7 +252,25 @@ class GroupSerializer(serializers.ModelSerializer):
         return [x.id for x in groupCompanies]
 
 
-class MediaSerializer(serializers.ModelSerializer):
+class MediaSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMixin):
     class Meta:
         model = models.Media
         fields = "__all__"
+
+    def validate(self, data):
+        company = data['company']
+        if self.context['request'].user.has_perm("view_company", company):
+            return data
+        else:
+            raise PermissionDenied()
+
+    def get_permissions_map(self, created):
+        company = self.data['company']
+        admins = Group.objects.get(name="company" + str(company) + '_admins')
+        accountants = Group.objects.get(
+            name="company" + str(company)+'_accountants')
+        return {
+            'view_media': [admins, accountants],
+            'change_media': [admins, accountants],
+            'delete_media': [admins, accountants]
+        }

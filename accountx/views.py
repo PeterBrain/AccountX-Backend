@@ -156,20 +156,23 @@ class UserViewSet(viewsets.ModelViewSet):
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = serializers.GroupSerializer
     filterset_class = GroupFilter
+
     def get_queryset(self):
         return get_objects_for_user(self.request.user, "change_group", klass=Group)
 
 
-class FileUploadView(APIView):
+class MediaViewSet(viewsets.ModelViewSet):
     parser_classes = [MultiPartParser]
+    serializer_class = serializers.MediaSerializer
+    queryset = models.Media.objects.all()
+    filterset_fields = ['company']
+    filter_backends = [filters.DjangoFilterBackend,
+                       guardianFilters.ObjectPermissionsFilter]
 
-    def post(self, request, format=None):
+    def create(self, request, format=None):
         file = request.FILES['file']
-        file_input = {
-            'original_file_name': file.name,
-            'content_type': file.content_type,
-            'size': file.size,
-        }
+        file_input = {'original_file_name': file.name,
+                      'content_type': file.content_type, 'size': file.size, }
         serializer = serializers.MediaSerializer(data=file_input)
         if serializer.is_valid():
             serializer.save()
@@ -178,23 +181,12 @@ class FileUploadView(APIView):
             return Response(serializer.data)
         return Response(serializer.errors, status=400)
 
-
-def media_download(request, pk):
-    media = models.Media.objects.get(pk=pk)
-    data = default_storage.open('media/' + str(pk)).read()
-    content_type = media.content_type
-    response = HttpResponse(data, content_type=content_type)
-    original_file_name = media.original_file_name
-    response['Content-Disposition'] = 'inline; filename=' + original_file_name
-    return response
-
-
-@api_view(['GET'])
-def media_get(request, pk):
-    try:
-        media = models.Booking.objects.get(pk=pk)
-    except models.Booking.DoesNotExist:
-        return Response({'error': 'Media does not exist.'}, status=404)
-
-    serializer = serializers.MediaSerializer(media)
-    return Response(serializer.data)
+    def retrieve(self, request, pk):
+        media = models.Media.objects.get(pk=pk)
+        data = default_storage.open('media/' + str(pk)).read()
+        content_type = media.content_type
+        response = HttpResponse(data, content_type=content_type)
+        original_file_name = media.original_file_name
+        response['Content-Disposition'] = 'inline; filename=' + \
+            original_file_name
+        return response
