@@ -154,9 +154,6 @@ class UserSerializer(serializers.ModelSerializer):
             obj, "view_company", klass=models.Company)
         return [x.id for x in userCompanies]
 
-    def get_groups(self, obj):
-        return [(x.id, x.name) for x in obj.groups.all()]
-
     def validate(self, data):
         groups = data['groups']
         if all(self.context['request'].user.has_perm("change_group", group) for group in groups):
