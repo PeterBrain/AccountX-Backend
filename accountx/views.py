@@ -172,8 +172,9 @@ class MediaViewSet(viewsets.ModelViewSet):
     def create(self, request, format=None):
         file = request.FILES['file']
         file_input = {'original_file_name': file.name,
-                      'content_type': file.content_type, 'size': file.size, }
-        serializer = serializers.MediaSerializer(data=file_input)
+                      'content_type': file.content_type, 'size': file.size, 'company': request.POST.get('company')}
+        serializer = serializers.MediaSerializer(
+            data=file_input, context={'request': request})
         if serializer.is_valid():
             serializer.save()
             default_storage.save(
