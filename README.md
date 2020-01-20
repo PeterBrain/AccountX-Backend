@@ -11,7 +11,9 @@ python manage.py migrate
 ```
 
 ## Load initial data to database using Django fixtures 
+## User Password: Pa55w.rd
 ```shell
+python manage.py loaddata initial_users
 python manage.py loaddata initial_companies
 python manage.py loaddata initial_bookingTypes
 python manage.py loaddata initial_sales
