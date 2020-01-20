@@ -3,32 +3,16 @@
     "model": "accountx.company",
     "pk": 1,
     "fields": {
-      "name": "Company 1",
-      "description": "Company 1"
+      "name": "Company1",
+      "description": "Das ist Company 1"
     }
   },
   {
     "model": "accountx.company",
     "pk": 2,
     "fields": {
-      "name": "Company 2",
-      "description": "Company 2"
-    }
-  },
-  {
-    "model": "accountx.company",
-    "pk": 3,
-    "fields": {
-      "name": "Company 3",
-      "description": "Company 3"
-    }
-  },
-  {
-    "model": "accountx.company",
-    "pk": 4,
-    "fields": {
-      "name": "Company 4",
-      "description": "Company 4"
+      "name": "Company2",
+      "description": "Company 2 ist auch gut."
     }
   }
 ]

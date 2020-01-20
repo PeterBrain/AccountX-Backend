@@ -5,30 +5,30 @@
     "fields": {
       "company": 1,
       "bookingType": 1,
-      "invNo": "1111",
-      "invDate": "2020-02-02",
-      "biller": "Customer 1",
-      "ust": 0.2,
-      "net": 1456,
-      "cashflowdate": "2020-02-13",
-      "notes": "Note 1",
-      "invoice": ""
+      "invNo": "4124",
+      "invDate": "2020-01-11",
+      "biller": "Amazon",
+      "vat": 0.2,
+      "net": 200.0,
+      "cashflowdate": "2020-01-11",
+      "notes": "SSD + HDD",
+      "invoice": []
     }
   },
   {
     "model": "accountx.purchase",
     "pk": 2,
     "fields": {
-      "company": 4,
-      "bookingType": 8,
-      "invNo": "1112",
-      "invDate": "2020-03-02",
-      "biller": "Customer 2",
-      "ust": 0.1,
-      "net": 3452,
-      "cashflowdate": "2020-03-13",
-      "notes": "Note 2",
-      "invoice": ""
+      "company": 1,
+      "bookingType": 1,
+      "invNo": "Inv.102",
+      "invDate": "2020-02-11",
+      "biller": "Hartlauer",
+      "vat": 0.2,
+      "net": 150.0,
+      "cashflowdate": "2020-02-12",
+      "notes": "Telefon",
+      "invoice": []
     }
   },
   {
@@ -36,127 +36,31 @@
     "pk": 3,
     "fields": {
       "company": 2,
-      "bookingType": 3,
-      "invNo": "1113",
-      "invDate": "2020-05-02",
-      "biller": "Customer 3",
-      "ust": 0.2,
-      "net": 34,
-      "cashflowdate": "2020-05-13",
-      "notes": "Note 3",
-      "invoice": ""
+      "bookingType": 5,
+      "invNo": "324323",
+      "invDate": "2020-01-30",
+      "biller": "WK",
+      "vat": 0.2,
+      "net": 100.0,
+      "cashflowdate": "2020-01-30",
+      "notes": "Beitrag",
+      "invoice": []
     }
   },
   {
     "model": "accountx.purchase",
     "pk": 4,
     "fields": {
-      "company": 1,
-      "bookingType": 2,
-      "invNo": "1114",
-      "invDate": "2020-07-02",
-      "biller": "Customer 4",
-      "ust": 0.2,
-      "net": 876,
-      "cashflowdate": "2020-07-13",
-      "notes": "Note 4",
-      "invoice": ""
-    }
-  },
-  {
-    "model": "accountx.purchase",
-    "pk": 5,
-    "fields": {
-      "company": 4,
-      "bookingType": 7,
-      "invNo": "1115",
-      "invDate": "2020-07-02",
-      "biller": "Customer 5",
-      "ust": 0.2,
-      "net": 1233,
-      "cashflowdate": "2020-07-13",
-      "notes": "Note 5",
-      "invoice": ""
-    }
-  },
-  {
-    "model": "accountx.purchase",
-    "pk": 6,
-    "fields": {
-      "company": 3,
-      "bookingType": 5,
-      "invNo": "1116",
-      "invDate": "2020-10-02",
-      "biller": "Customer 6",
-      "ust": 0.2,
-      "net": 765,
-      "cashflowdate": "2020-10-13",
-      "notes": "Note 6",
-      "invoice": ""
-    }
-  },
-  {
-    "model": "accountx.purchase",
-    "pk": 7,
-    "fields": {
-      "company": 3,
-      "bookingType": 6,
-      "invNo": "1117",
-      "invDate": "2020-11-02",
-      "biller": "Customer 7",
-      "ust": 0.13,
-      "net": 3432,
-      "cashflowdate": "2020-11-13",
-      "notes": "Note 7",
-      "invoice": ""
-    }
-  },
-  {
-    "model": "accountx.purchase",
-    "pk": 8,
-    "fields": {
-      "company": 1,
-      "bookingType": 2,
-      "invNo": "1118",
-      "invDate": "2020-11-02",
-      "biller": "Customer 8",
-      "ust": 0.2,
-      "net": 897,
-      "cashflowdate": "2020-11-13",
-      "notes": "Note 8",
-      "invoice": ""
-    }
-  },
-  {
-    "model": "accountx.purchase",
-    "pk": 9,
-    "fields": {
       "company": 2,
-      "bookingType": 4,
-      "invNo": "1119",
-      "invDate": "2020-12-02",
-      "biller": "Customer 9",
-      "ust": 0.2,
-      "net": 258,
-      "cashflowdate": "2020-12-13",
-      "notes": "Note 9",
-      "invoice": ""
-    }
-  },
-  {
-    "model": "accountx.purchase",
-    "pk": 10,
-    "fields": {
-      "company": 1,
-      "bookingType": 2,
-      "invNo": "1120",
-      "invDate": "2020-12-02",
-      "biller": "Customer 10",
-      "ust": 0.1,
-      "net": 8765,
-      "cashflowdate": "2020-12-13",
-      "notes": "Note 10",
-      "invoice": ""
+      "bookingType": 6,
+      "invNo": "23523",
+      "invDate": "2020-01-31",
+      "biller": "WK",
+      "vat": 0.2,
+      "net": 900.0,
+      "cashflowdate": "2020-02-01",
+      "notes": "Kilometergeld",
+      "invoice": []
     }
   }
 ]
