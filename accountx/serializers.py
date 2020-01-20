@@ -143,11 +143,17 @@ class VatReportSerializer(serializers.Serializer):
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=False)
     companies = serializers.SerializerMethodField(read_only=True)
+    isAdminOf = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = User
         fields = ['id', 'username', 'email', 'password',
-                  'first_name', 'last_name', 'groups', 'companies']
+                  'first_name', 'last_name', 'groups', 'companies', 'isAdminOf']
+
+    def get_isAdminOf(self, obj):
+        userCompanies = get_objects_for_user(
+            obj, "change_company", klass=models.Company)
+        return [x.id for x in userCompanies]
 
     def get_companies(self, obj):
         userCompanies = get_objects_for_user(
