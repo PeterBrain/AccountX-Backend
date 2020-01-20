@@ -1,66 +1,50 @@
 [
   {
-    "model": "accountx.bookingType",
+    "model": "accountx.bookingtype",
     "pk": 1,
     "fields": {
       "company": 1,
-      "name": "AAA"
+      "name": "GWG"
     }
   },
   {
-    "model": "accountx.bookingType",
+    "model": "accountx.bookingtype",
     "pk": 2,
     "fields": {
       "company": 1,
-      "name": "BBB"
+      "name": "SVA"
     }
   },
   {
-    "model": "accountx.bookingType",
+    "model": "accountx.bookingtype",
     "pk": 3,
     "fields": {
-      "company": 2,
-      "name": "AAA"
+      "company": 1,
+      "name": "WK"
     }
   },
   {
-    "model": "accountx.bookingType",
+    "model": "accountx.bookingtype",
     "pk": 4,
     "fields": {
       "company": 2,
-      "name": "BBB"
+      "name": "GWG"
     }
   },
   {
-    "model": "accountx.bookingType",
+    "model": "accountx.bookingtype",
     "pk": 5,
     "fields": {
-      "company": 3,
-      "name": "AAA"
+      "company": 2,
+      "name": "SVA"
     }
   },
   {
-    "model": "accountx.bookingType",
+    "model": "accountx.bookingtype",
     "pk": 6,
     "fields": {
-      "company": 3,
-      "name": "BBB"
-    }
-  },
-  {
-    "model": "accountx.bookingType",
-    "pk": 7,
-    "fields": {
-      "company": 4,
-      "name": "AAA"
-    }
-  },
-  {
-    "model": "accountx.bookingType",
-    "pk": 8,
-    "fields": {
-      "company": 4,
-      "name": "BBB"
+      "company": 2,
+      "name": "KFZ"
     }
   }
 ]
