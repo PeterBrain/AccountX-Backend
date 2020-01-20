@@ -22,6 +22,7 @@ class Media(models.Model):
     original_file_name = models.TextField()
     content_type = models.TextField()
     size = models.PositiveIntegerField()
+    company = models.ForeignKey(Company, on_delete=models.CASCADE)
 
 
 class Sale(models.Model):

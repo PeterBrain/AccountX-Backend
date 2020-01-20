@@ -703,3 +703,4 @@ MigrationBackup/
 
 *.sqlite3
 .vscode
+/media/
