@@ -219,6 +219,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
 class GroupSerializer(serializers.ModelSerializer):
     companies = serializers.SerializerMethodField(read_only=True)
+    companyName = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = Group
@@ -228,6 +229,11 @@ class GroupSerializer(serializers.ModelSerializer):
         groupCompanies = get_objects_for_group(
             obj, "view_company", klass=models.Company)
         return [x.id for x in groupCompanies]
+
+    def get_companyName(self, obj):
+        groupCompanies = get_objects_for_group(
+            obj, "view_company", klass=models.Company)
+        return [x.name for x in groupCompanies]
 
 
 class MediaSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMixin):

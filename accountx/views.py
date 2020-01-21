@@ -97,7 +97,7 @@ class VatReportViewset(viewsets.ViewSet):
         before = request.query_params.get("before")
         after = request.query_params.get("after")
         cid = request.query_params.get("cid")
-        if(cid is None or before is None or after is None):
+        if (cid is None or before is None or after is None):
             raise APIException(detail="Url parameters missing")
         company = get_object_or_404(models.Company, pk=cid)
         if (not request.user.has_perm("view_company", company)):
