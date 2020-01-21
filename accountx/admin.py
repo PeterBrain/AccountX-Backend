@@ -10,4 +10,22 @@ class CompanyAdmin(GuardedModelAdmin):
     pass
 
 
+class SaleAdmin(GuardedModelAdmin):
+    pass
+
+
+class PurchaseAdmin(GuardedModelAdmin):
+    pass
+
+
+class MediaAdmin(GuardedModelAdmin):
+    pass
+
+
 admin.site.register(models.Company, CompanyAdmin)
+
+admin.site.register(models.Sale, SaleAdmin)
+
+admin.site.register(models.Purchase, PurchaseAdmin)
+
+admin.site.register(models.Media, MediaAdmin)

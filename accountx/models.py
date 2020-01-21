@@ -29,7 +29,7 @@ class Sale(models.Model):
     project = models.TextField()
     vat = models.FloatField()
     net = models.FloatField()
-    notes = models.TextField(blank=True)
+    notes = models.TextField(blank=True,null=True)
     cashflowdate = models.DateField(null=True)
     invoice = models.ManyToManyField('Media', blank=True)
 
@@ -46,7 +46,7 @@ class Purchase(models.Model):
     vat = models.FloatField()
     net = models.FloatField()
     cashflowdate = models.DateField(null=True)
-    notes = models.TextField(blank=True)
+    notes = models.TextField(blank=True,null=True)
     invoice = models.ManyToManyField('Media', blank=True)
 
     def __str__(self):
