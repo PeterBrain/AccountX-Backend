@@ -3,36 +3,40 @@ from guardian.shortcuts import (assign_perm, get_groups_with_perms,
                                 get_objects_for_group, get_objects_for_user)
 from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
+from django.shortcuts import get_object_or_404
 from rest_framework_guardian.serializers import \
     ObjectPermissionsAssignmentMixin
 
 from . import models
-
+from random import randint
 
 class CompanySerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMixin):
     groups = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = models.Company
-        fields = '__all__'
-
+        fields = ['name','description','groups','id']
+    def create(self, validated_data):
+        tmpStr = str(randint(0, 100))
+        admins = Group.objects.create(
+                name= validated_data['name']+ '_' + tmpStr + '_admins')
+        accountants = Group.objects.create(
+                name= validated_data['name'] + '_' + tmpStr + '_accountants') 
+        validated_data['accountants'] = accountants
+        validated_data['admins'] = admins
+        company = super(CompanySerializer, self).create(validated_data)
+        company.save()
+        return company
     def get_groups(self, obj):
         groupsForCompany = get_groups_with_perms(obj)
         return [x.id for x in groupsForCompany]
 
     def get_permissions_map(self, created):
         current_user = self.context['request'].user
-        company = self.data['id']
-        if(Group.objects.filter(name="company" + str(company)+'_accountants').exists()):
-            admins = Group.objects.get(
-                name="company" + str(company) + '_admins')
-            accountants = Group.objects.get(
-                name="company" + str(company)+'_accountants')
-        else:
-            admins = Group.objects.create(
-                name="company" + str(company) + '_admins')
-            accountants = Group.objects.create(
-                name="company" + str(company)+'_accountants')
+        print(self.data)
+        company = get_object_or_404(models.Company, pk=self.data['id'])
+        admins = company.admins
+        accountants = company.accountants
         current_user.groups.add(admins)
         current_user.groups.add(accountants)
         assign_perm("change_group", admins, admins)
@@ -68,10 +72,9 @@ class SaleSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMix
             raise PermissionDenied()
 
     def get_permissions_map(self, created):
-        company = self.data['company']
-        admins = Group.objects.get(name="company" + str(company) + '_admins')
-        accountants = Group.objects.get(
-            name="company" + str(company)+'_accountants')
+        company = get_object_or_404(models.Company, pk=self.data['company'])
+        admins = company.admins
+        accountants = company.accountants
         return {
             'view_sale': [admins, accountants],
             'change_sale': [admins, accountants],
@@ -97,10 +100,9 @@ class PurchaseSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmen
             raise PermissionDenied()
 
     def get_permissions_map(self, created):
-        company = self.data['company']
-        admins = Group.objects.get(name="company" + str(company) + '_admins')
-        accountants = Group.objects.get(
-            name="company" + str(company)+'_accountants')
+        company = get_object_or_404(models.Company, pk=self.data['company'])
+        admins = company.admins
+        accountants = company.accountants
         return {
             'view_purchase': [admins, accountants],
             'change_purchase': [admins, accountants],
@@ -250,9 +252,8 @@ class MediaSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMi
 
     def get_permissions_map(self, created):
         company = self.data['company']
-        admins = Group.objects.get(name="company" + str(company) + '_admins')
-        accountants = Group.objects.get(
-            name="company" + str(company)+'_accountants')
+        admins = company.admins
+        accountants = company.accountants
         return {
             'view_media': [admins, accountants],
             'change_media': [admins, accountants],
