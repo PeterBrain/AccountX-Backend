@@ -126,7 +126,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_isAdminOf(self, obj):
         userCompanies = get_objects_for_user(
-            obj, "change_company", klass=models.Company)
+            obj, "change_company", klass=models.Company, accept_global_perms=False)
         return [x.id for x in userCompanies]
 
     def get_companies(self, obj):
