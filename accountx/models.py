@@ -3,10 +3,12 @@ from django.db import models
 
 
 class Company(models.Model):
-    name = models.TextField()
+    name = models.TextField(unique=True)
     description = models.TextField(null=True)
-    accountants = models.ForeignKey(Group, on_delete=models.CASCADE, related_name="accountants")
-    admins = models.ForeignKey(Group, on_delete=models.CASCADE,related_name="admins")
+    accountants = models.ForeignKey(
+        Group, on_delete=models.CASCADE, related_name="accountants")
+    admins = models.ForeignKey(
+        Group, on_delete=models.CASCADE, related_name="admins")
 
     def __str__(self):
         return self.name

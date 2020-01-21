@@ -157,7 +157,7 @@ class MediaViewSet(viewsets.ModelViewSet):
     parser_classes = [MultiPartParser]
     serializer_class = serializers.MediaSerializer
     queryset = models.Media.objects.all()
-    filterset_fields = ['company','id']
+    filterset_fields = ['company', 'id']
     filter_backends = [filters.DjangoFilterBackend,
                        guardianFilters.ObjectPermissionsFilter]
 

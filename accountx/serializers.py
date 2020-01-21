@@ -8,32 +8,32 @@ from rest_framework_guardian.serializers import \
     ObjectPermissionsAssignmentMixin
 
 from . import models
-from random import randint
+
 
 class CompanySerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMixin):
     groups = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
         model = models.Company
-        fields = ['name','description','groups','id']
+        fields = ['name', 'description', 'groups', 'id']
+
     def create(self, validated_data):
-        tmpStr = str(randint(0, 100))
         admins = Group.objects.create(
-                name= validated_data['name']+ '_' + tmpStr + '_admins')
+            name=validated_data['name'] + ' Admins')
         accountants = Group.objects.create(
-                name= validated_data['name'] + '_' + tmpStr + '_accountants') 
+            name=validated_data['name'] + ' Accountants')
         validated_data['accountants'] = accountants
         validated_data['admins'] = admins
         company = super(CompanySerializer, self).create(validated_data)
         company.save()
         return company
+
     def get_groups(self, obj):
         groupsForCompany = get_groups_with_perms(obj)
         return [x.id for x in groupsForCompany]
 
     def get_permissions_map(self, created):
         current_user = self.context['request'].user
-        print(self.data)
         company = get_object_or_404(models.Company, pk=self.data['id'])
         admins = company.admins
         accountants = company.accountants
@@ -251,7 +251,7 @@ class MediaSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMi
             raise PermissionDenied()
 
     def get_permissions_map(self, created):
-        company = self.data['company']
+        company = get_object_or_404(models.Company, pk=self.data['company'])
         admins = company.admins
         accountants = company.accountants
         return {
