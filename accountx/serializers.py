@@ -145,6 +145,15 @@ class UserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = super(UserSerializer, self).create(validated_data)
+        for i in user.groups.all():
+            company = get_object_or_404(
+                models.Company, pk=i.accountants.all().first().id)
+            assign_perm("change_user", company.admins, user)
+            assign_perm("view_user", company.admins, user)
+            assign_perm("delete_user", company.admins, user)
+            assign_perm("change_user", user, user)
+            assign_perm("view_user", user, user)
+            assign_perm("delete_user", user, user)
         user.set_password(validated_data['password'])
         user.user_permissions.add(
             Permission.objects.get(name='Can add sale'))
@@ -189,6 +198,9 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         user = super(RegisterUserSerializer, self).create(validated_data)
+        assign_perm("change_user", user, user)
+        assign_perm("view_user", user, user)
+        assign_perm("delete_user", user, user)
         user.set_password(validated_data['password'])
         user.user_permissions.add(
             Permission.objects.get(name='Can add company'))

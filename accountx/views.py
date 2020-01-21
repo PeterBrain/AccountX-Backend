@@ -123,8 +123,11 @@ class PurchaseViewSet(viewsets.ModelViewSet):
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
     filterset_class = UserFilter
+    filter_backends = [filters.DjangoFilterBackend,
+                       guardianFilters.ObjectPermissionsFilter]
 
     def get_permissions(self):
         if self.action == "create":
@@ -138,11 +141,6 @@ class UserViewSet(viewsets.ModelViewSet):
             return serializers.UserSerializer
         else:
             return serializers.RegisterUserSerializer
-
-    def get_queryset(self):
-        queryset = get_objects_for_user(self.request.user, "change_user", any_perm=True,
-                                        klass=User) | User.objects.filter(groups__in=self.request.user.groups.all())
-        return queryset.distinct()
 
 
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
