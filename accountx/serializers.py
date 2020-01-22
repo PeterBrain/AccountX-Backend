@@ -146,11 +146,12 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         user = super(UserSerializer, self).create(validated_data)
         for i in user.groups.all():
-            company = get_object_or_404(
-                models.Company, pk=i.accountants.all().first().id)
-            assign_perm("change_user", company.admins, user)
-            assign_perm("view_user", company.admins, user)
-            assign_perm("delete_user", company.admins, user)
+            if i.accountants.exists():
+                company = get_object_or_404(
+                    models.Company, pk=i.accountants.all().first().id)
+                assign_perm("change_user", company.admins, user)
+                assign_perm("view_user", company.admins, user)
+                assign_perm("delete_user", company.admins, user)
             assign_perm("change_user", user, user)
             assign_perm("view_user", user, user)
             assign_perm("delete_user", user, user)
