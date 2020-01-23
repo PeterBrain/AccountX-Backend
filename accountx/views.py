@@ -17,6 +17,9 @@ from . import models, serializers
 
 
 class SaleFilter(filters.FilterSet):
+    """
+    Provides filtering for sales depending on the dates.
+    """
     cashflowdate = filters.DateFromToRangeFilter('cashflowdate')
     invDate = filters.DateFromToRangeFilter('invDate')
 
@@ -26,6 +29,9 @@ class SaleFilter(filters.FilterSet):
 
 
 class UserFilter(filters.FilterSet):
+    """
+    Provides filtering for users based on the companies they can view.
+    """
     cid = filters.NumberFilter(method='filter_companies', label='cid')
 
     def filter_companies(self, queryset, name, value):
@@ -42,6 +48,9 @@ class UserFilter(filters.FilterSet):
 
 
 class GroupFilter(filters.FilterSet):
+    """
+    Provides filtering for groups based on the companies they can view.
+    """
     cid = filters.NumberFilter(method='filter_companies', label='cid')
 
     def filter_companies(self, queryset, name, value):
@@ -58,6 +67,9 @@ class GroupFilter(filters.FilterSet):
 
 
 class PurchaseFilter(filters.FilterSet):
+    """
+    Provides filtering for purchases depending on the dates.
+    """
     cashflowdate = filters.DateFromToRangeFilter('cashflowdate')
     invDate = filters.DateFromToRangeFilter('invDate')
 
@@ -67,6 +79,9 @@ class PurchaseFilter(filters.FilterSet):
 
 
 class CompanyViewSet(viewsets.ModelViewSet):
+    """
+    A viewset for the companies.
+    """
     queryset = models.Company.objects.all()
     serializer_class = serializers.CompanySerializer
     filter_backends = [filters.DjangoFilterBackend,
@@ -74,6 +89,9 @@ class CompanyViewSet(viewsets.ModelViewSet):
 
 
 class SaleViewSet(viewsets.ModelViewSet):
+    """
+    A viewset for the sales.
+    """
     queryset = models.Sale.objects.all()
     serializer_class = serializers.SaleSerializer
     filterset_class = SaleFilter
@@ -82,10 +100,17 @@ class SaleViewSet(viewsets.ModelViewSet):
 
 
 class VatReportViewset(viewsets.ViewSet):
+    """
+    A viewset for the vat report.
+    """
     permission_classes = [IsAuthenticated]
     serializer_class = serializers.VatReportSerializer
 
     def list(self, request):
+        """
+        This calculates the vat (for sales and for purchases) for a company within
+        a specified time range. It also checks for the necessary permissions.
+        """
         before = request.query_params.get("before")
         after = request.query_params.get("after")
         cid = request.query_params.get("cid")
@@ -107,6 +132,9 @@ class VatReportViewset(viewsets.ViewSet):
 
 
 class PurchaseViewSet(viewsets.ModelViewSet):
+    """
+    A viewset for the purchases.
+    """
     queryset = models.Purchase.objects.all()
     serializer_class = serializers.PurchaseSerializer
     filterset_class = PurchaseFilter
@@ -115,6 +143,9 @@ class PurchaseViewSet(viewsets.ModelViewSet):
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    """
+    A viewset for the sales.
+    """
     queryset = User.objects.all()
     serializer_class = serializers.UserSerializer
     filterset_class = UserFilter
@@ -122,6 +153,9 @@ class UserViewSet(viewsets.ModelViewSet):
                        guardianFilters.ObjectPermissionsFilter]
 
     def get_permissions(self):
+        """
+        This ensures that any user can create an user (register).
+        """
         if self.action == "create":
             permission_classes = [AllowAny]
         else:
@@ -129,6 +163,10 @@ class UserViewSet(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
     def get_serializer_class(self):
+        """
+        This returnes the register view if the client is an anonymous user and
+        the create user view for admins.
+        """
         if self.request.user.is_authenticated:
             return serializers.UserSerializer
         else:
@@ -136,14 +174,24 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class GroupViewSet(viewsets.ReadOnlyModelViewSet):
+    """
+    A viewset for groups
+    """
     serializer_class = serializers.GroupSerializer
     filterset_class = GroupFilter
 
     def get_queryset(self):
+        """
+        This ensures that the user can only see groups he is able to change.
+        """
         return get_objects_for_user(self.request.user, "change_group", klass=Group)
 
 
 class MediaViewSet(viewsets.ModelViewSet):
+    """
+    A viewset for medias.
+    The metadata for the media can be retrieved by filtering the list view.
+    """
     parser_classes = [MultiPartParser]
     serializer_class = serializers.MediaSerializer
     queryset = models.Media.objects.all()
@@ -152,6 +200,9 @@ class MediaViewSet(viewsets.ModelViewSet):
                        guardianFilters.ObjectPermissionsFilter]
 
     def create(self, request, format=None):
+        """
+        Implements the file upload functionality.
+        """
         file = request.FILES['file']
         file_input = {'original_file_name': file.name,
                       'content_type': file.content_type, 'size': file.size, 'company': request.POST.get('company')}
@@ -165,6 +216,9 @@ class MediaViewSet(viewsets.ModelViewSet):
         return Response(serializer.errors, status=400)
 
     def retrieve(self, request, pk):
+        """
+        Implements the file download functionality
+        """
         media = models.Media.objects.get(pk=pk)
         data = default_storage.open('media/' + str(pk)).read()
         content_type = media.content_type
