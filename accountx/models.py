@@ -1,8 +1,12 @@
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import Group, User
 from django.db import models
 
 
 class Company(models.Model):
+    """
+    This class represents the central point in the data Model.
+    All permissions are based on the groups specified on this object.
+    """
     name = models.TextField(unique=True)
     description = models.TextField(null=True)
     accountants = models.ForeignKey(
@@ -15,6 +19,9 @@ class Company(models.Model):
 
 
 class Media(models.Model):
+    """
+    This class is used to represent the media file of a Sale or a Purchase.
+    """
     original_file_name = models.TextField()
     content_type = models.TextField()
     size = models.PositiveIntegerField()
@@ -22,6 +29,9 @@ class Media(models.Model):
 
 
 class Sale(models.Model):
+    """
+    This class represents a sale of a company. It can be modified by the accountants or the admins.
+    """
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     bookingType = models.TextField()
     invDate = models.DateField()
@@ -29,7 +39,7 @@ class Sale(models.Model):
     project = models.TextField()
     vat = models.FloatField()
     net = models.FloatField()
-    notes = models.TextField(blank=True,null=True)
+    notes = models.TextField(blank=True, null=True)
     cashflowdate = models.DateField(null=True)
     invoice = models.ManyToManyField('Media', blank=True)
 
@@ -38,6 +48,9 @@ class Sale(models.Model):
 
 
 class Purchase(models.Model):
+    """
+    This class represents a purchase of a company. It can be modified by the accountants or the admins.
+    """
     company = models.ForeignKey(Company, on_delete=models.CASCADE)
     bookingType = models.TextField()
     invNo = models.TextField()
@@ -46,7 +59,7 @@ class Purchase(models.Model):
     vat = models.FloatField()
     net = models.FloatField()
     cashflowdate = models.DateField(null=True)
-    notes = models.TextField(blank=True,null=True)
+    notes = models.TextField(blank=True, null=True)
     invoice = models.ManyToManyField('Media', blank=True)
 
     def __str__(self):

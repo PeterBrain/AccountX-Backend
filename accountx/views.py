@@ -1,25 +1,17 @@
-from urllib import request
-
 from django.contrib.auth.models import Group, User
 from django.core.files.base import ContentFile
-from django.core.files.storage import FileSystemStorage, default_storage
-from django.db.models import Q
+from django.core.files.storage import default_storage
 from django.http import HttpResponse
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
-from guardian.shortcuts import (assign_perm, get_groups_with_perms,
-                                get_objects_for_group, get_objects_for_user,
+from guardian.shortcuts import (get_groups_with_perms, get_objects_for_user,
                                 get_users_with_perms)
-from rest_framework import exceptions, viewsets
-from rest_framework.decorators import api_view
+from rest_framework import viewsets
 from rest_framework.exceptions import APIException, PermissionDenied
-from rest_framework.parsers import FormParser, MultiPartParser
-from rest_framework.permissions import AllowAny, IsAdminUser, IsAuthenticated
+from rest_framework.parsers import MultiPartParser
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
 from rest_framework_guardian import filters as guardianFilters
-
-from accountx.views import User
 
 from . import models, serializers
 
@@ -106,8 +98,8 @@ class VatReportViewset(viewsets.ViewSet):
             company=company, cashflowdate__range=[after, before])
         purchases = models.Purchase.objects.filter(
             company=company, cashflowdate__range=[after, before])
-        vatIn = sum(sale.vat*sale.net for sale in sales)
-        vatOut = sum(purchase.vat*purchase.net for purchase in purchases)
+        vatIn = sum(sale.vat * sale.net for sale in sales)
+        vatOut = sum(purchase.vat * purchase.net for purchase in purchases)
         outData = [{"company": cid, "vatIn": vatIn, "vatOut": vatOut}]
         results = serializers.VatReportSerializer(
             instance=outData, many=True).data
@@ -179,5 +171,5 @@ class MediaViewSet(viewsets.ModelViewSet):
         response = HttpResponse(data, content_type=content_type)
         original_file_name = media.original_file_name
         response['Content-Disposition'] = 'inline; filename=' + \
-            original_file_name
+                                          original_file_name
         return response

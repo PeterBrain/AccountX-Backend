@@ -1,9 +1,11 @@
 from django.contrib import admin
-
 from guardian.admin import GuardedModelAdmin
+
 from . import models
 
-# Register your models here.
+"""
+All Admin pages are enabled, although they should not be necessary since all operations can be done through the REST API. 
+"""
 
 
 class CompanyAdmin(GuardedModelAdmin):

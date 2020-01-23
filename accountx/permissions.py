@@ -3,7 +3,8 @@ from rest_framework import permissions
 
 class CustomObjectPermissions(permissions.DjangoObjectPermissions):
     """
-    Similar to `DjangoObjectPermissions`, but adding 'view' permissions.
+    This file defines the basic permission needed for a specific operation.
+    This is used for filtering etc. 
     """
     perms_map = {
         'GET': ['%(app_label)s.view_%(model_name)s'],

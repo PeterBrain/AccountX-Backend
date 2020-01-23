@@ -1,9 +1,9 @@
 from django.contrib.auth.models import Group, Permission, User
+from django.shortcuts import get_object_or_404
 from guardian.shortcuts import (assign_perm, get_groups_with_perms,
                                 get_objects_for_group, get_objects_for_user)
 from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
-from django.shortcuts import get_object_or_404
 from rest_framework_guardian.serializers import \
     ObjectPermissionsAssignmentMixin
 
@@ -11,6 +11,9 @@ from . import models
 
 
 class CompanySerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMixin):
+    """
+    The serializer for the company model.
+    """
     groups = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
@@ -18,6 +21,10 @@ class CompanySerializer(serializers.ModelSerializer, ObjectPermissionsAssignment
         fields = ['name', 'description', 'groups', 'id']
 
     def create(self, validated_data):
+        """
+        This ensures that the groups for the company (admins and accountants) are created
+        and assignes the rights accordingly.
+        """
         admins = Group.objects.create(
             name=validated_data['name'] + ' Admins')
         accountants = Group.objects.create(
@@ -29,10 +36,17 @@ class CompanySerializer(serializers.ModelSerializer, ObjectPermissionsAssignment
         return company
 
     def get_groups(self, obj):
+        """
+        Returns a list of all groups with any rights on the company.
+        """
         groupsForCompany = get_groups_with_perms(obj)
         return [x.id for x in groupsForCompany]
 
     def get_permissions_map(self, created):
+        """
+        This function is called by the permission assignment mixin.
+        The returned permissions are then assigned on the object.
+        """
         current_user = self.context['request'].user
         company = get_object_or_404(models.Company, pk=self.data['id'])
         admins = company.admins
@@ -51,6 +65,9 @@ class CompanySerializer(serializers.ModelSerializer, ObjectPermissionsAssignment
 
 
 class SaleSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMixin):
+    """
+    The serializer for the sales model.
+    """
     gross = serializers.SerializerMethodField()
     invNo = serializers.SerializerMethodField()
 
@@ -59,12 +76,23 @@ class SaleSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMix
         fields = '__all__'
 
     def get_gross(self, obj):
-        return obj.net * (1+obj.vat)
+        """
+        This calculates the gross value, since it would be unecessary
+        to store this information.
+        """
+        return obj.net * (1 + obj.vat)
 
     def get_invNo(self, obj):
+        """
+        This generates a invoice number.
+        """
         return str(obj.invDate.year) + str(obj.id)
 
     def validate(self, data):
+        """
+        This is a crude method to ensure that no one can create a sale on
+        a foreign company. 
+        """
         company = data['company']
         if self.context['request'].user.has_perm("view_company", company):
             return data
@@ -72,6 +100,10 @@ class SaleSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMix
             raise PermissionDenied()
 
     def get_permissions_map(self, created):
+        """
+        This function is called by the permission assignment mixin.
+        The returned permissions are then assigned on the object.
+        """
         company = get_object_or_404(models.Company, pk=self.data['company'])
         admins = company.admins
         accountants = company.accountants
@@ -83,6 +115,9 @@ class SaleSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMix
 
 
 class PurchaseSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMixin):
+    """
+    The serializer for the purchase model.
+    """
     gross = serializers.SerializerMethodField()
 
     class Meta:
@@ -90,9 +125,17 @@ class PurchaseSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmen
         fields = '__all__'
 
     def get_gross(self, obj):
-        return obj.net * (1+obj.vat)
+        """
+        This calculates the gross value, since it would be unecessary
+        to store this information.
+        """
+        return obj.net * (1 + obj.vat)
 
     def validate(self, data):
+        """
+        This is a crude method to ensure that no one can create a purchase on
+        a foreign company. 
+        """
         company = data['company']
         if self.context['request'].user.has_perm("view_company", company):
             return data
@@ -100,6 +143,10 @@ class PurchaseSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmen
             raise PermissionDenied()
 
     def get_permissions_map(self, created):
+        """
+        This function is called by the permission assignment mixin.
+        The returned permissions are then assigned on the object.
+        """
         company = get_object_or_404(models.Company, pk=self.data['company'])
         admins = company.admins
         accountants = company.accountants
@@ -111,12 +158,23 @@ class PurchaseSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmen
 
 
 class VatReportSerializer(serializers.Serializer):
+    """
+    This is a serializer used for calculating the vat within a certain time
+    range. It does not belong to a model, instead the values are calculated
+    within the view.
+    """
     company = serializers.IntegerField()
     vatIn = serializers.FloatField()
     vatOut = serializers.FloatField()
 
 
 class UserSerializer(serializers.ModelSerializer):
+    """
+    The serializer for the user model.
+    This is only used for authenticated users.
+    For the serializer representing data to 
+    anonymous users, please see the RegisterUserSerializer.
+    """
     password = serializers.CharField(write_only=True, required=False)
     companies = serializers.SerializerMethodField(read_only=True)
     isAdminOf = serializers.SerializerMethodField(read_only=True)
@@ -127,23 +185,47 @@ class UserSerializer(serializers.ModelSerializer):
                   'first_name', 'last_name', 'groups', 'companies', 'isAdminOf']
 
     def get_isAdminOf(self, obj):
+        """
+        This is provides helpful information to the frontend.
+        It lists all companies this user can change (is admin of).
+        """
         userCompanies = get_objects_for_user(
             obj, "change_company", klass=models.Company, accept_global_perms=False)
         return [x.id for x in userCompanies]
 
     def get_companies(self, obj):
+        """
+        This is provides helpful information to the frontend.
+        It lists all companies the user is a member of.
+        """
         userCompanies = get_objects_for_user(
             obj, "view_company", klass=models.Company)
         return [x.id for x in userCompanies]
 
     def validate(self, data):
+        """
+        This is a crude method to ensure that the user cannot add himself to a
+        group where he has no permissions on.
+        To allow password changes (or name changes), the change is also permitted if the user does not
+        try to change the group (new groups are a subset of the groups the user is a member of)
+        """
         groups = data['groups']
-        if all(self.context['request'].user.has_perm("change_group", group) for group in groups) or set(groups) <= set(self.context['request'].user.groups.all()):
+        if all(self.context['request'].user.has_perm("change_group", group) for group in groups) or set(groups) <= set(
+                self.context['request'].user.groups.all()):
             return data
         else:
             raise PermissionDenied()
 
     def create(self, validated_data):
+        """
+        This is used to assign permissions to the newly created user.
+        Since this method is only used for users which are created by an admin, 
+        the admin group of the corresponding company gets change permissions assigned.
+        Change permission is also given to the user himself.
+        In addition, global permissions are assigned since they are needed in some special cases.
+        Per definition, a accountant (i.e. a user that is created by an admin) cannot create companies.
+        For simplification, the ObjectPermissionsAssignmentMixin can be used.
+        """
         user = super(UserSerializer, self).create(validated_data)
         for i in user.groups.all():
             if i.accountants.exists():
@@ -177,6 +259,9 @@ class UserSerializer(serializers.ModelSerializer):
         return user
 
     def update(self, instance, validated_data):
+        """
+        This is needed for a correct password change. 
+        """
         user = super(UserSerializer, self).update(instance, validated_data)
         if validated_data.get('password') is not None:
             user.set_password(validated_data['password'])
@@ -185,6 +270,12 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class RegisterUserSerializer(serializers.ModelSerializer):
+    """
+    The serializer for the user model.
+    This is only used for anonymous users.
+    For the serializer representing data to 
+    authenticated users, please see the UserSerializer.
+    """
     password = serializers.CharField(write_only=True)
 
     class Meta:
@@ -192,6 +283,15 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         fields = ['username', 'email', 'password', 'first_name', 'last_name']
 
     def create(self, validated_data):
+        """
+        This is used to assign permissions to the newly created user.
+        Since this method is only used for users which are created by an admin, 
+        the admin group of the corresponding company gets change permissions assigned.
+        Change permission is also given to the user himself.
+        In addition, global permissions are assigned since they are needed in some special cases.
+        This user is able to create companies.
+        For simplification, the ObjectPermissionsAssignmentMixin can be used.
+        """
         user = super(RegisterUserSerializer, self).create(validated_data)
         assign_perm("change_user", user, user)
         assign_perm("view_user", user, user)
@@ -227,6 +327,9 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 
 
 class GroupSerializer(serializers.ModelSerializer):
+    """
+    The serializer for the group model.
+    """
     companies = serializers.SerializerMethodField(read_only=True)
     companyName = serializers.SerializerMethodField(read_only=True)
 
@@ -235,22 +338,37 @@ class GroupSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_companies(self, obj):
+        """
+        This is provides helpful information to the frontend.
+        It lists all companies the group is a member of.
+        """
         groupCompanies = get_objects_for_group(
             obj, "view_company", klass=models.Company)
         return [x.id for x in groupCompanies]
 
     def get_companyName(self, obj):
+        """
+        This is provides helpful information to the frontend.
+        It lists all companies (names!) the group is a member of.
+        Redundant information, but it simplifies the frontend.
+        """
         groupCompanies = get_objects_for_group(
             obj, "view_company", klass=models.Company)
         return [x.name for x in groupCompanies]
 
 
 class MediaSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMixin):
+    """
+    The serializer for the media model.
+    """
     class Meta:
         model = models.Media
         fields = "__all__"
 
     def validate(self, data):
+        """
+        This ensures that a media (invoice) can only be seen within a company.
+        """
         company = data['company']
         if self.context['request'].user.has_perm("view_company", company):
             return data
@@ -258,6 +376,10 @@ class MediaSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMi
             raise PermissionDenied()
 
     def get_permissions_map(self, created):
+        """
+        This function is called by the permission assignment mixin.
+        The returned permissions are then assigned on the object.
+        """
         company = get_object_or_404(models.Company, pk=self.data['company'])
         admins = company.admins
         accountants = company.accountants
