@@ -95,7 +95,8 @@ class SaleSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMix
         """
         company = data['company']
         invoice = data.get("invoice")
-        if not self.context['request'].user.has_perm("view_company", company) or not all(self.context['request'].user.has_perm("view_media", media) for media in invoice):
+        if not self.context['request'].user.has_perm("view_company", company) or not all(
+                self.context['request'].user.has_perm("view_media", media) for media in invoice):
             raise PermissionDenied()
         return data
 
@@ -138,7 +139,8 @@ class PurchaseSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmen
         """
         company = data['company']
         invoice = data.get("invoice")
-        if not self.context['request'].user.has_perm("view_company", company) or not all(self.context['request'].user.has_perm("view_media", media) for media in invoice):
+        if not self.context['request'].user.has_perm("view_company", company) or not all(
+                self.context['request'].user.has_perm("view_media", media) for media in invoice):
             raise PermissionDenied()
         return data
 
@@ -362,6 +364,7 @@ class MediaSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMi
     """
     The serializer for the media model.
     """
+
     class Meta:
         model = models.Media
         fields = "__all__"
