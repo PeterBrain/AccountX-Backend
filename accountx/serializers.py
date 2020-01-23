@@ -91,13 +91,13 @@ class SaleSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmentMix
     def validate(self, data):
         """
         This is a crude method to ensure that no one can create a sale on
-        a foreign company. 
+        a foreign company. Or use a foreign invoice.
         """
         company = data['company']
-        if self.context['request'].user.has_perm("view_company", company):
-            return data
-        else:
+        invoice = data.get("invoice")
+        if not self.context['request'].user.has_perm("view_company", company) or not all(self.context['request'].user.has_perm("view_media", media) for media in invoice):
             raise PermissionDenied()
+        return data
 
     def get_permissions_map(self, created):
         """
@@ -134,13 +134,13 @@ class PurchaseSerializer(serializers.ModelSerializer, ObjectPermissionsAssignmen
     def validate(self, data):
         """
         This is a crude method to ensure that no one can create a purchase on
-        a foreign company. 
+        a foreign company. Or use a foreign invoice.
         """
         company = data['company']
-        if self.context['request'].user.has_perm("view_company", company):
-            return data
-        else:
+        invoice = data.get("invoice")
+        if not self.context['request'].user.has_perm("view_company", company) or not all(self.context['request'].user.has_perm("view_media", media) for media in invoice):
             raise PermissionDenied()
+        return data
 
     def get_permissions_map(self, created):
         """
@@ -225,6 +225,7 @@ class UserSerializer(serializers.ModelSerializer):
         In addition, global permissions are assigned since they are needed in some special cases.
         Per definition, a accountant (i.e. a user that is created by an admin) cannot create companies.
         For simplification, the ObjectPermissionsAssignmentMixin can be used.
+        Minor security "feature" :) : accountants can create other accountants.
         """
         user = super(UserSerializer, self).create(validated_data)
         for i in user.groups.all():

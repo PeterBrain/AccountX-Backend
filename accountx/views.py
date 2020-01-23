@@ -220,6 +220,8 @@ class MediaViewSet(viewsets.ModelViewSet):
         Implements the file download functionality
         """
         media = models.Media.objects.get(pk=pk)
+        if not request.user.has_perm("view_media", media):
+            raise PermissionDenied()
         data = default_storage.open('media/' + str(pk)).read()
         content_type = media.content_type
         response = HttpResponse(data, content_type=content_type)
