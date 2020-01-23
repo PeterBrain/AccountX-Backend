@@ -138,7 +138,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         groups = data['groups']
-        if all(self.context['request'].user.has_perm("change_group", group) for group in groups):
+        if all(self.context['request'].user.has_perm("change_group", group) for group in groups) or set(groups) <= set(self.context['request'].user.groups.all()):
             return data
         else:
             raise PermissionDenied()
@@ -152,10 +152,10 @@ class UserSerializer(serializers.ModelSerializer):
                 assign_perm("change_user", company.admins, user)
                 assign_perm("view_user", company.admins, user)
                 assign_perm("delete_user", company.admins, user)
-            assign_perm("change_user", user, user)
-            assign_perm("view_user", user, user)
-            assign_perm("delete_user", user, user)
-        user.set_password(validated_data['password'])
+        assign_perm("change_user", user, user)
+        assign_perm("view_user", user, user)
+        assign_perm("delete_user", user, user)
+
         user.user_permissions.add(
             Permission.objects.get(name='Can add sale'))
         user.user_permissions.add(
@@ -172,22 +172,16 @@ class UserSerializer(serializers.ModelSerializer):
             Permission.objects.get(name='Can add media'))
         user.user_permissions.add(
             Permission.objects.get(name='Can delete media'))
+        user.set_password(validated_data['password'])
         user.save()
         return user
 
     def update(self, instance, validated_data):
+        user = super(UserSerializer, self).update(instance, validated_data)
         if validated_data.get('password') is not None:
-            instance.set_password(validated_data['password'])
-        if validated_data.get('email') is not None:
-            instance.email = validated_data['email']
-        if validated_data.get('username') is not None:
-            instance.username = validated_data['username']
-        if validated_data.get('first_name') is not None:
-            instance.first_name = validated_data['first_name']
-        if validated_data.get('last_name') is not None:
-            instance.last_name = validated_data['last_name']
-        instance.save()
-        return instance
+            user.set_password(validated_data['password'])
+        user.save()
+        return user
 
 
 class RegisterUserSerializer(serializers.ModelSerializer):
