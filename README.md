@@ -10,10 +10,8 @@ pip install -r requirements.txt
 python manage.py migrate
 ```
 
-## Load initial data to database using Django fixtures 
+## Run development server
+
 ```shell
-python manage.py loaddata initial_companies
-python manage.py loaddata initial_bookingTypes
-python manage.py loaddata initial_sales
-python manage.py loaddata initial_purchases
+python manage.py runserver
 ```
