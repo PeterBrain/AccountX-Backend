@@ -3,7 +3,7 @@
 ## Setup Guide
 
 ### Virtual environment
-Create a virtualenvironment and activate it.
+Create a virtual environment and activate it.
 Supported and tested python versions are 3.8.0 and 3.7.3.
 
 If this app is used within a different project, it has to be ensured that the settings.py is set correctly.
